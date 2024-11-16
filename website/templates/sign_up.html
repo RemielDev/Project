@@ -1,5 +1,6 @@
-{% extends "base.html" %} {% block title %}Sign Up{% endblock %} {% block
-content %}
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
 <form method="POST">
   <h3 align="center">Sign Up</h3>
   <div class="form-group">
@@ -20,6 +21,27 @@ content %}
       id="firstName"
       name="firstName"
       placeholder="Enter first name"
+    />
+  </div>
+  <div class="form-group">
+    <label for="schoolId">Select a School:</label>
+    <select name="schoolId" id="schoolId" class="form-control">
+      {% for school in schools %}
+        <option value="{{ school }}">{{ school }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  {% if school %}
+    <p>You selected: {{ school }}</p>
+  {% endif %}
+  <div class="form-group">
+    <label for="schoolName">School Name (California CC Only)</label>
+    <input
+      type="text"
+      class="form-control"
+      id="schoolName"
+      name="schoolName"
+      placeholder="Enter school name"
     />
   </div>
   <div class="form-group">

@@ -15,4 +15,23 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
     first_name = db.Column(db.String(150))
+    schoolId = db.Column(db.Integer, db.ForeignKey('school.id'))
     notes = db.relationship('Note')
+
+class School(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(150), unique=True)
+    
+
+class Thread(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    school_id = db.Column(db.Integer, db.ForeignKey('school.id'))
+    title = db.Column(db.String(150), unique=True)
+    
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    content = db.Column(db.String(1000))
+    time_stamp = db.Column(db.DateTime(timezone=True), default=func.now())
+
