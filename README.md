@@ -1,5 +1,6 @@
-# Project
-HackCC
-oof
-changes
-mariox
+#Project: Anabbelle, Remiel, Christopher
+
+Packages:
+- Flask
+- Flask_Cors
+- python3
