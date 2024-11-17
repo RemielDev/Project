@@ -5,6 +5,9 @@ from . import db
 
 xp = Blueprint('xp', __name__)
 
+
+
+
 @xp.route('/update_xp', methods=['POST'])
 @login_required
 def update_xp():

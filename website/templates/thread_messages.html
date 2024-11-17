@@ -13,26 +13,24 @@
                 {% if message.user.id != user.id %}
                 <div class="message_tab__profile-info d-flex align-items-center">
                     <img 
-                    src="{{ message.user.profile_picture or url_for('static', filename='images/default-profile.png') }}" 
-                    alt="Profile Picture" 
-                    class="message_tab__rounded-circle mr-3" 
-                    style="width: 40px; height: 40px; object-fit: cover;">
-                
-                         alt="Profile Picture" 
-                         class="message_tab__rounded-circle mr-3" 
-                         style="width: 40px; height: 40px; object-fit: cover;">
-                    <p class="font-weight-bold mb-0">{{ message.user.first_name }}</p>
+                        src="{{ message.user.profile_picture if message.user.profile_picture else url_for('static', filename='images/default-profile.png') }}" 
+                        alt="Profile Picture" 
+                        class="message_tab__rounded-circle mr-3" 
+                        style="width: 40px; height: 40px; object-fit: cover;">
+                    <p class="font-weight-bold mb-0">{{ message.user.first_name or "Guest" }}</p>
                 </div>
+                
                 {% endif %}
 
                 {% if message.user.id == user.id %}
                 <div class="message_tab__profile-info d-flex align-items-center ml-auto">
-                    <p class="font-weight-bold mb-0">{{ message.user.first_name }}</p>
-                    <img src="{{ message.user.profile_picture or url_for('static', filename='images/default-profile.png') }}" 
+                    <p class="font-weight-bold mb-0">{{ message.user.first_name or "Guest" }}</p>
+                    <img src="{{ message.user.profile_picture if message.user.profile_picture else url_for('static', filename='images/default-profile.png') }}" 
                          alt="Profile Picture" 
-                         class="message_tab__rounded-circle ml-3" 
+                         class="rounded-circle ml-3" 
                          style="width: 40px; height: 40px; object-fit: cover;">
                 </div>
+                
                 {% endif %}
             </div>
 
