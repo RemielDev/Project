@@ -335,7 +335,7 @@
           .then(data => {
             currentXp = data.xp;
             currentLevel = data.level;
-            const xpFraction = (currentXp / xpPerLevel) * 100;
+            const xpFraction = (currentXp / (xpPerLevel*currentLevel*0.8)) * 100*currentLevel;
 
             xpBarFill.style.width = `${xpFraction}%`;
             levelDisplay.textContent = `Level: ${currentLevel}`;

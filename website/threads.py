@@ -106,9 +106,34 @@ def thread_messages(thread_id):
             )
 
             db.session.add(new_message)
+
+        # Update the user's XP and level
+            user = User.query.get(current_user.id)
+            if not user:
+                flash("User not found.", "error")
+                return redirect(request.referrer)
+
+            user.xp += 18
+            if user.xp >= 100*user.level:
+                user.level += 1
+                user.xp = 1
+
+            # Commit the changes to the database
+            try:
+                db.session.commit()
+                flash("Message sent and XP updated successfully!", "success")
+            except Exception as e:
+                db.session.rollback()
+                flash(f"An error occurred: {str(e)}", "error")
+
+                return redirect(request.referrer)
+
             db.session.commit()
+
+
 
             flash('Message posted successfully!', category='success')
             return redirect(url_for('thread.thread_messages', thread_id=thread_id))
 
     return render_template('thread_messages.html', thread=thread, messages=messages, user=current_user)
+
