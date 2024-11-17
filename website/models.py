@@ -17,6 +17,7 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(150))
     schoolId = db.Column(db.Integer, db.ForeignKey('school.id'))
     notes = db.relationship('Note')
+    profile_picture = db.Column(db.String(150), nullable=True)  # New field
 
 class School(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -25,7 +26,7 @@ class School(db.Model):
 
 class Thread(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    school_id = db.Column(db.Integer, db.ForeignKey('school.id'))
+    schoolId = db.Column(db.Integer, db.ForeignKey('school.id'))
     title = db.Column(db.String(150), unique=True)
     description = db.Column(db.String(500))  # Added description field
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'))  # Added creator field

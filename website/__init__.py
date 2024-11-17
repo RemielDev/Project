@@ -14,6 +14,8 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     db.init_app(app)
 
+    app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024
+
     from .views import views
     from .auth import auth
     from .threads import thread

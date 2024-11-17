@@ -21,7 +21,7 @@
 
     <style>
       .navbar {
-        background: linear-gradient(90deg, #4e54c8, #8f94fb); /* Modern gradient background */
+        background: linear-gradient(90deg, #2f007c, #9f63ff);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       }
 
@@ -31,17 +31,40 @@
         color: #fff !important;
       }
 
+      .navbar-nav {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        width: 100%;
+      }
+
       .navbar-nav .nav-link {
-        color: #f8f9fa !important; /* Lighter text color */
+        color: #f8f9fa !important;
         transition: color 0.3s ease;
+        font-size: calc(12px + 0.4vw);
+        padding: calc(5px + 0.5vw);
+        text-align: center;
       }
 
       .navbar-nav .nav-link:hover {
-        color: #ffeb3b !important; /* Highlighted hover color */
+        color: #ffeb3b !important;
       }
 
       .navbar-toggler {
         border-color: rgba(255, 255, 255, 0.5);
+      }
+
+      .nav-item img {
+        border: 2px solid #ffffff;
+        transition: transform 0.2s ease, width 0.2s ease, height 0.2s ease;
+        cursor: pointer;
+        width: calc(30px + 0.5vw);
+        height: calc(30px + 0.5vw);
+        object-fit: cover;
+      }
+
+      .nav-item img:hover {
+        transform: scale(1.1);
       }
 
       .alert {
@@ -49,7 +72,19 @@
       }
 
       body {
-        background-color: #f4f7fa; /* Subtle background for contrast */
+        background-color: #f4f7fa;
+      }
+
+      .modal-body img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-bottom: 15px;
+      }
+
+      .dropdown-menu {
+        text-align: center;
       }
     </style>
   </head>
@@ -65,16 +100,36 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbar">
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav">
           {% if user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" id="home" href="/notes">Home</a>
+            <a class="nav-link" id="home" href="/notes">Notes</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" id="threads" href="/">Threads</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" id="logout" href="/logout">Logout</a>
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle d-flex align-items-center"
+              href="#"
+              id="profileDropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <img
+                src="{{ user.profile_picture or url_for('static', filename='images/default-profile.png') }}"
+                alt="Profile Picture"
+                class="rounded-circle"
+                id="navbarProfilePicture"
+              />
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdown">
+              <a class="dropdown-item" href="/settings">Settings</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item text-danger" href="/logout">Logout</a>
+            </div>
           </li>
           {% else %}
           <li class="nav-item">
@@ -87,12 +142,12 @@
         </ul>
       </div>
     </nav>
-    
+
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     {% for category, message in messages %}
     <div
-      class="alert {% if category == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show"
+      class="alert {% if category == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show flash-message"
       role="alert"
     >
       {{ message }}
@@ -105,6 +160,29 @@
     {% endwith %}
 
     <div class="container mt-4">{% block content %} {% endblock %}</div>
+
+    <!-- Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="profileModalLabel">Your Profile</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body text-center">
+            <img
+              src="{{ user.profile_picture or url_for('static', filename='images/default-profile.png') }}"
+              alt="Profile Picture"
+            />
+            <h5>{{ user.first_name }}</h5>
+            <p class="text-muted">{{ user.email }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
       integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -122,15 +200,22 @@
     ></script>
 
     {% block javascript %}
-    <script type="text/javascript">
-      function deleteNote(noteId) {
-        fetch("/delete-note", {
-          method: "POST",
-          body: JSON.stringify({ noteId: noteId }),
-        }).then((_res) => {
-          window.location.href = "/";
+    <script>
+      document.getElementById("navbarProfilePicture").addEventListener("click", function () {
+        $('#profileModal').modal('show'); // Show modal on profile picture click
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const flashMessages = document.querySelectorAll(".flash-message");
+        flashMessages.forEach((message) => {
+          setTimeout(() => {
+            message.classList.remove("show");
+            message.addEventListener("transitionend", () => {
+              message.remove();
+            });
+          }, 4000);
         });
-      }
+      });
     </script>
     {% endblock %}
   </body>

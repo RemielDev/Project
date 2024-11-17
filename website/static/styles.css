@@ -1,74 +1,172 @@
-/* Styles for Login/Signup Frame */
-.login-signup-frame .form-container {
-    max-width: 400px;
+/* Navbar Styles */
+.navbar .nav-item img {
+    border: 2px solid #ffffff;
+    transition: transform 0.2s ease;
+}
+
+.navbar .nav-item img:hover {
+    transform: scale(1.1);
+}
+
+/* Global Page Background */
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    height: 100%;
+}
+
+/* Threads Container */
+.threads-container {
+    max-width: 1000px;
     margin: 0 auto;
-    padding: 20px;
+}
+
+/* Thread Card */
+.thread-card {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
     border: 1px solid #ccc;
-    border-radius: 10px;
-    background-color: #f9f9f9;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.login-signup-frame .form-group {
-    margin-bottom: 15px;
-}
-
-.login-signup-frame .form-control {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.login-signup-frame .form-btn {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.login-signup-frame .form-btn:hover {
-    background-color: #0056b3;
-}
-
-.login-signup-frame .btn-secondary {
-    background-color: #6c757d;
-}
-
-.login-signup-frame .btn-secondary:hover {
-    background-color: #5a6268;
-}
-
-.login-signup-frame .btn-3 {
-    background-color: #9300ff;
-}
-
-.login-signup-frame .btn-3:hover {
-    background-color: #630f9f;
-}
-
-.login-signup-frame .title {
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
     margin-bottom: 20px;
 }
 
-.login-signup-frame .page-link {
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1050;
+}
+
+.modal-content {
+    position: relative;
+    max-width: 500px;
+    margin: 10% auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.modal-content h3 {
+    margin-bottom: 20px;
     text-align: center;
+}
+
+.modal-content .btn {
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+/* Modal Close Button */
+.modal-content .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Buttons Inside Thread Card */
+.d-flex .btn {
+    margin-right: 10px;
+}
+
+/* Form Elements */
+textarea {
+    resize: vertical;
+}
+
+.form-group {
     margin-bottom: 15px;
 }
 
-.login-signup-frame .page-link a {
-    color: #007bff;
-    text-decoration: none;
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
 }
 
-.login-signup-frame .page-link a:hover {
-    text-decoration: underline;
+.form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.btn {
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+}
+
+/* Create Thread Form */
+#create-thread-form {
+    display: none;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+}
+
+/* Flash Message Styles */
+.flash-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    min-width: 300px;
+    padding: 15px;
+    background-color: #f8d7da; /* Error background */
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    animation: fadeOut 4s forwards;
+}
+
+.flash-message.success {
+    background-color: #d4edda; /* Success background */
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+/* Fade-out animation */
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .threads-container {
+        padding: 10px;
+    }
+
+    .thread-card {
+        padding: 10px;
+    }
+
+    .modal-content {
+        max-width: 90%;
+    }
 }

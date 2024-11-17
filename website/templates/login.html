@@ -3,25 +3,40 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<div class="login-signup-frame">
+<div class="login-frame" style="height: 100vh;">
   <div class="form-container">
-    <p class="title">Welcome back</p>
-    <form method="POST" class="form">
+    <form method="POST" enctype="multipart/form-data" class="form">
+      <h3 class="title">Welcome back</h3>
       <div class="form-group">
-        <input type="email" class="form-control input" id="email" name="email" placeholder="Enter email" required>
+        <label for="email">Email Address</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          name="email"
+          placeholder="Enter email"
+          required
+        />
       </div>
       <div class="form-group">
-        <input type="password" class="form-control input" id="password" name="password" placeholder="Enter password" required>
+        <label for="password">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          name="password"
+          placeholder="Enter password"
+          required
+        />
       </div>
       <p class="page-link">
-        <span class="page-link-label"><a href="#">Forgot Password?</a></span>
+        <a href="#">Forgot Password?</a>
       </p>
       <div class="buttons-container">
-        <button type="submit" class="btn btn-primary form-btn">Log in</button>
+        <button type="submit" class="btnPurpleFancy form-btn">Log in</button>
         <a href="{{ url_for('auth.sign_up') }}" class="btn btn-secondary form-btn">Sign Up</a>
       </div>
     </form>
   </div>
 </div>
-
 {% endblock %}

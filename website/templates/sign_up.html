@@ -1,9 +1,11 @@
 {% extends "base.html" %}
+
 {% block title %}Sign Up{% endblock %}
+
 {% block content %}
-<div class="login-signup-frame">
+<div class="signup-frame">
   <div class="form-container">
-    <form method="POST" class="form">
+    <form method="POST" enctype="multipart/form-data" class="form">
       <h3 class="title">Sign Up</h3>
       <div class="form-group">
         <label for="email">Email Address</label>
@@ -58,8 +60,51 @@
           required
         />
       </div>
-      <button type="submit" class="btn btn-primary form-btn">Submit</button>
+      <div class="form-group">
+        <label for="profilePicture">Profile Picture</label>
+        <div class="custom-file-input-wrapper">
+          <input
+            type="file"
+            class="form-control custom-file-input"
+            id="profilePicture"
+            name="profilePicture"
+            accept="image/*"
+            onchange="updateFileName(this)"
+          />
+          <label for="profilePicture" class="custom-file-label" id="fileLabel" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">Choose File</label>
+          <button type="button" class="btn btn-sm btn-danger mt-2 d-none" id="clearFile" onclick="clearFileInput()">Remove File</button>
+        </div>
+      </div>
+      <button type="submit" class="btnPurpleFancy form-btn">Submit</button>
     </form>
   </div>
 </div>
+
+<script>
+  function updateFileName(input) {
+    const fileName = input.files[0]?.name || "Choose File";
+    const fileLabel = document.getElementById('fileLabel');
+    const clearButton = document.getElementById('clearFile');
+
+    fileLabel.textContent = fileName;
+    fileLabel.title = fileName; // Show full name on hover
+
+    if (input.files.length > 0) {
+      clearButton.classList.remove('d-none');
+    } else {
+      clearButton.classList.add('d-none');
+    }
+  }
+
+  function clearFileInput() {
+    const fileInput = document.getElementById('profilePicture');
+    const fileLabel = document.getElementById('fileLabel');
+    const clearButton = document.getElementById('clearFile');
+
+    fileInput.value = "";
+    fileLabel.textContent = "Choose File";
+    fileLabel.title = ""; // Remove title on clear
+    clearButton.classList.add('d-none');
+  }
+</script>
 {% endblock %}

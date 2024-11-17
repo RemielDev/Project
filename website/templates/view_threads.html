@@ -5,19 +5,19 @@
 {% block content %}
 <div class="container mt-4">
     <h1 class="text-center">Threads for {{ school.name }}</h1>
-
     <div class="threads-container mt-4">
         {% for thread in threads %}
         <div class="thread-card border rounded p-3 mb-3">
             <h2 class="h5">{{ thread.title }}</h2>
             <p>{{ thread.description }}</p>
             <small class="text-muted">Created by User ID {{ thread.created_by }} at {{ thread.time_stamp }}</small>
-            <form action="{{ url_for('thread.thread_messages', thread_id=thread.id) }}" method="GET" class="mt-2 d-inline">
-                <button type="submit" class="btn btn-primary">Enter</button>
-            </form>
-            <form action="{{ url_for('thread.view_threads', thread_id=thread.id) }}" method="GET" class="mt-2 d-inline">
-                <button type="submit" class="btn btn-dark">Online Session</button>
-            </form>
+            <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+                <form action="{{ url_for('thread.thread_messages', thread_id=thread.id) }}" method="GET" class="d-inline">
+                    <button type="submit" class="btn btn-primary">Enter</button>
+                </form>
+                <button type="button" class="btn btn-dark" onclick="openScheduleModal('{{ thread.id }}')">Schedule Session</button>
+                <button type="button" class="btn btn-secondary" onclick="openViewSessionsModal('{{ thread.id }}')">See Other Sessions</button>
+            </div>
         </div>
         {% endfor %}
     </div>
@@ -42,6 +42,41 @@
     </div>
 </div>
 
+<!-- Schedule Session Modal -->
+<div id="scheduleModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0, 0, 0, 0.5);">
+    <div class="modal-content border rounded p-4" style="position:relative; max-width:500px; margin:10% auto; background:white;">
+        <button class="close-button" style="position:absolute; top:10px; right:100px; background:none; border:none; font-size:1.5rem; font-weight:bold; cursor:pointer;" onclick="closeScheduleModal()">&times;</button>
+        <h3 class="text-center mb-4">Schedule a Study Session</h3>
+        <form id="scheduleForm" onsubmit="addSession(event)">
+            <div class="form-group">
+                <label for="schedule-day">Day:</label>
+                <input type="date" id="schedule-day" name="schedule_day" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="start-time">Start Time:</label>
+                <input type="time" id="start-time" name="start_time" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="duration">Duration (hours):</label>
+                <input type="number" id="duration" name="duration" class="form-control" placeholder="Enter duration in hours" required>
+            </div>
+            <input type="hidden" id="threadId" name="thread_id">
+            <button type="submit" class="btn btn-primary mt-3">Schedule</button>
+        </form>
+    </div>
+</div>
+
+<!-- View Sessions Modal -->
+<div id="viewSessionsModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0, 0, 0, 0.5);">
+    <div class="modal-content border rounded p-4" style="position:relative; max-width:600px; margin:10% auto; background:white;">
+        <button class="close-button" style="position:absolute; top:10px; right:100px; background:none; border:none; font-size:1.5rem; font-weight:bold; cursor:pointer;" onclick="closeViewSessionsModal()">&times;</button>
+        <h3 class="text-center mb-4">Other Scheduled Sessions</h3>
+        <div id="sessionsList" class="list-group">
+            <!-- Sessions will be dynamically added here -->
+        </div>
+    </div>
+</div>
+
 <style>
     .threads-container {
         max-width: 1000px;
@@ -56,4 +91,67 @@
         resize: vertical;
     }
 </style>
+<script>
+    const sessions = {}; // Store sessions for each thread
+
+    function openScheduleModal(threadId) {
+        document.getElementById('scheduleModal').style.display = 'block';
+        document.getElementById('threadId').value = threadId;
+    }
+
+    function closeScheduleModal() {
+        document.getElementById('scheduleModal').style.display = 'none';
+    }
+
+    function addSession(event) {
+        event.preventDefault();
+        const threadId = document.getElementById('threadId').value;
+        const day = document.getElementById('schedule-day').value;
+        const startTime = document.getElementById('start-time').value;
+        const duration = document.getElementById('duration').value;
+
+        if (!sessions[threadId]) {
+            sessions[threadId] = [];
+        }
+
+        sessions[threadId].push({ day, startTime, duration });
+        closeScheduleModal();
+        alert('Session added successfully!');
+    }
+
+    function openViewSessionsModal(threadId) {
+        document.getElementById('viewSessionsModal').style.display = 'block';
+        const sessionsList = document.getElementById('sessionsList');
+        sessionsList.innerHTML = '';
+
+        if (sessions[threadId] && sessions[threadId].length > 0) {
+            sessions[threadId].forEach((session, index) => {
+                const sessionTime = formatTime(session.startTime); // Convert time to AM/PM format
+                const sessionItem = document.createElement('div');
+                sessionItem.className = 'list-group-item list-group-item-action';
+                sessionItem.innerHTML = `
+                    <div class="d-flex justify-content-between">
+                        <span>Session on ${session.day} at ${sessionTime} (${session.duration} hours)</span>
+                        <button class="btn btn-sm btn-primary">Add to Calendar</button>
+                    </div>
+                `;
+                sessionsList.appendChild(sessionItem);
+            });
+        } else {
+            sessionsList.innerHTML = '<p class="text-muted">No sessions scheduled yet.</p>';
+        }
+    }
+
+    function closeViewSessionsModal() {
+        document.getElementById('viewSessionsModal').style.display = 'none';
+    }
+
+    function formatTime(time24) {
+        const [hour, minute] = time24.split(':').map(Number);
+        const period = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 || 12; // Convert to 12-hour format
+        return `${hour12}:${minute.toString().padStart(2, '0')} ${period}`;
+    }
+</script>
+
 {% endblock %}

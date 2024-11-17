@@ -1,4 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
+from werkzeug.utils import secure_filename
+import os
 from .models import User, School
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
@@ -6,6 +8,16 @@ from flask_login import login_user, login_required, logout_user, current_user
 auth = Blueprint('auth', __name__)
 thread = Blueprint('thread', __name__)
 
+# Allowed file extensions for profile pictures
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# Ensure the uploads directory exists
+UPLOAD_FOLDER = os.path.join('static', 'uploads')
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 # Login Route
 @auth.route('/login', methods=['GET', 'POST'])
@@ -38,6 +50,7 @@ def sign_up():
         school_name = request.form.get('schoolId')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
+        profile_picture = request.files.get('profilePicture')  # Handle uploaded file
 
         # Check if the school exists in the database
         school = School.query.filter_by(name=school_name).first()
@@ -58,7 +71,24 @@ def sign_up():
         elif len(password1) < 7:
             flash('Password must be at least 7 characters.', category='error')
         else:
-            new_user = User(email=email, first_name=first_name, school_id=school.id, password=password1)
+            # Save the profile picture or assign a default
+            profile_picture_url = '/static/images/default-profile.png'
+            if profile_picture and allowed_file(profile_picture.filename):
+                try:
+                    filename = secure_filename(profile_picture.filename)
+                    profile_picture_path = os.path.join(UPLOAD_FOLDER, filename)
+                    profile_picture.save(profile_picture_path)
+                    profile_picture_url = f'/static/images/{filename}'
+                except Exception as e:
+                    flash(f"Error saving profile picture: {str(e)}", category='error')
+
+            new_user = User(
+                email=email,
+                first_name=first_name,
+                schoolId=school.id,
+                password=password1,
+                profile_picture=profile_picture_url
+            )
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)
