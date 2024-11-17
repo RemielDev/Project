@@ -20,6 +20,65 @@
     <title>{% block title %}Home{% endblock %}</title>
 
     <style>
+    
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      padding: 0.5rem 1rem;
+    }
+
+    .leveling-system {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      z-index: 1;
+    }
+
+    .xp-bar {
+      background-color: white;
+      border-radius: 15px;
+      overflow: hidden;
+      width: 300px;
+      height: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .xp-bar-fill {
+      background-color: #d6b3ff;
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .add-xp-btn {
+      background-color: #fff;
+      color: #2f007c;
+      border: 1px solid #9f63ff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      margin-right: 10px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .add-xp-btn:hover {
+      background-color: #9f63ff;
+      color: #fff;
+    }
+
+    .level-display {
+      color: #fff;
+      font-weight: bold;
+      margin-left: 15px;
+      min-width: 80px; /* Ensures the level display area has a fixed width */
+      text-align: center; /* Centers the level text within the allocated space */
+    }
+
       .navbar {
         background: linear-gradient(90deg, #2f007c, #9f63ff);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -86,9 +145,56 @@
       .dropdown-menu {
         text-align: center;
       }
+
+      /* Confetti styling */
+      .confetti {
+        position: fixed;
+        bottom: 0;
+        width: 500px; /* Larger size */
+        height: auto;
+        z-index: 999; /* Ensure it is on top of most elements */
+        display: none; /* Hidden by default */
+      }
+
+      .confetti.left {
+        left: -50px;
+        bottom: -50px;
+      }
+
+      .confetti.right {
+        right: -50px;
+        bottom: -50px;
+        transform: scaleX(-1); /* Mirror horizontally */
+      }
+
+      /* Trophy animation */
+      .trophy {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 50px; /* Start small */
+        height: auto;
+        transform: translate(-50%, -50%) scale(0); /* Start in the center, invisible */
+        z-index: 1000;
+        animation: enlargeTrophy 5s forwards;
+      }
+
+      @keyframes enlargeTrophy {
+        from {
+          transform: translate(-50%, -50%) scale(0);
+        }
+        to {
+          transform: translate(-50%, -50%) scale(10);
+        }
+      }
+
+      .hidden {
+        display: none;
+      }
     </style>
   </head>
   <body>
+    
     <nav class="navbar navbar-expand-lg">
       <a class="navbar-brand" href="/">StudyCCC</a>
       <button
@@ -99,6 +205,13 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
+      <div class="leveling-system">
+        <button class="add-xp-btn" id="addXpBtn">+25 XP</button>
+        <div class="xp-bar">
+          <div class="xp-bar-fill" id="xpBarFill"></div>
+        </div>
+        <span class="level-display" id="levelDisplay">Level: 0</span>
+      </div>
       <div class="collapse navbar-collapse" id="navbar">
         <ul class="navbar-nav">
           {% if user.is_authenticated %}
@@ -216,7 +329,129 @@
           }, 4000);
         });
       });
+
+      let currentXp = 0;
+      let currentLevel = 0;
+      const xpPerLevel = 100;
+
+      //xp stuff
+      document.getElementById("addXpBtn").addEventListener("click", function () {
+        currentXp += 25;
+        if (currentXp >= xpPerLevel) {
+          currentXp -= xpPerLevel;
+          currentLevel++;
+        }
+        const xpFraction = (currentXp / xpPerLevel) * 100;
+        document.getElementById("xpBarFill").style.width = `${xpFraction}%`;
+        document.getElementById("levelDisplay").textContent = `Level: ${currentLevel}`;
+
+        console.log(`Current Level: ${currentLevel}, XP: ${currentXp}`);
+      });
+
+      //confetti stuff
+      document.addEventListener("DOMContentLoaded", function () {
+        let currentXp = 0;
+        let currentLevel = 0;
+        const xpPerLevel = 100;
+
+        const addXpBtn = document.getElementById("addXpBtn");
+        const xpBarFill = document.getElementById("xpBarFill");
+        const levelDisplay = document.getElementById("levelDisplay");
+
+        const confettiLeft = document.createElement("img");
+        confettiLeft.src = "{{ url_for('static', filename='images/confetti.gif') }}";
+        confettiLeft.classList.add("confetti", "left");
+
+        const confettiRight = document.createElement("img");
+        confettiRight.src = "{{ url_for('static', filename='images/confetti.gif') }}";
+        confettiRight.classList.add("confetti", "right");
+
+        document.body.appendChild(confettiLeft);
+        document.body.appendChild(confettiRight);
+
+        const showConfetti = () => {
+          confettiLeft.style.display = "block";
+          confettiRight.style.display = "block";
+
+          setTimeout(() => {
+            confettiLeft.style.display = "none";
+            confettiRight.style.display = "none";
+          }, 2000); // Hide after 2 seconds
+        };
+
+        addXpBtn.addEventListener("click", function () {
+          currentXp += 25;
+
+          if (currentXp >= xpPerLevel) {
+            currentXp -= xpPerLevel;
+            currentLevel++;
+            showConfetti();
+          }
+
+          const xpFraction = (currentXp / xpPerLevel) * 100;
+          xpBarFill.style.width = `${xpFraction}%`;
+          levelDisplay.textContent = `Level: ${currentLevel}`;
+
+          console.log(`Current Level: ${currentLevel}, XP: ${currentXp}`);
+        });
+      });
+
+      //trophy stuff
+      document.addEventListener("DOMContentLoaded", function () {
+        let currentXp = 0;
+        let currentLevel = 0;
+        const xpPerLevel = 100;
+
+        const addXpBtn = document.getElementById("addXpBtn");
+        const xpBarFill = document.getElementById("xpBarFill");
+        const levelDisplay = document.getElementById("levelDisplay");
+
+        // Create the trophy element
+        const trophy = document.createElement("img");
+        trophy.src = "{{ url_for('static', filename='images/trophy1.png') }}"; // Start with the first image
+        trophy.classList.add("trophy", "hidden");
+        document.body.appendChild(trophy);
+
+        const showTrophy = () => {
+          trophy.classList.remove("hidden");
+
+          // Alternate between the two trophy images
+          let isImageOne = true;
+          const alternateInterval = setInterval(() => {
+            trophy.src = isImageOne
+              ? "{{ url_for('static', filename='images/trophy2.png') }}"
+              : "{{ url_for('static', filename='images/trophy1.png') }}";
+            isImageOne = !isImageOne;
+          }, 200); // Alternate every 200ms
+
+          // Stop alternation after 2 seconds
+          setTimeout(() => {
+            clearInterval(alternateInterval);
+            trophy.classList.add("hidden");
+          }, 2000);
+        };
+
+        // Event listener for the Add XP button
+        addXpBtn.addEventListener("click", function () {
+          currentXp += 25; // Add 25 XP per click
+
+          // Check for level-up
+          if (currentXp >= xpPerLevel) {
+            currentXp -= xpPerLevel; // Subtract the XP used to level up
+            currentLevel++; // Increase the level
+            showTrophy(); // Show the trophy animation
+          }
+
+          // Update the XP bar and level display
+          const xpFraction = (currentXp / xpPerLevel) * 100;
+          xpBarFill.style.width = `${xpFraction}%`;
+          levelDisplay.textContent = `Level: ${currentLevel}`;
+        });
+      });
     </script>
+    
     {% endblock %}
+    <img src="{{ url_for('static', filename='images/confetti.gif') }}" alt="Confetti Explosion" class="confetti left">
+    <img src="{{ url_for('static', filename='images/confetti.gif') }}" alt="Confetti Explosion Mirrored" class="confetti right">
   </body>
 </html>
