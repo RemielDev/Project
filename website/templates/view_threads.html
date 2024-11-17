@@ -12,8 +12,11 @@
             <h2 class="h5">{{ thread.title }}</h2>
             <p>{{ thread.description }}</p>
             <small class="text-muted">Created by User ID {{ thread.created_by }} at {{ thread.time_stamp }}</small>
-            <form action="{{ url_for('thread.thread_messages', thread_id=thread.id) }}" method="GET" class="mt-2">
+            <form action="{{ url_for('thread.thread_messages', thread_id=thread.id) }}" method="GET" class="mt-2 d-inline">
                 <button type="submit" class="btn btn-primary">Enter</button>
+            </form>
+            <form action="{{ url_for('thread.view_threads', thread_id=thread.id) }}" method="GET" class="mt-2 d-inline">
+                <button type="submit" class="btn btn-dark">Online Session</button>
             </form>
         </div>
         {% endfor %}
@@ -41,7 +44,7 @@
 
 <style>
     .threads-container {
-        max-width: 800px;
+        max-width: 1000px;
         margin: 0 auto;
     }
 
