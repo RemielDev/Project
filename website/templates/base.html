@@ -192,6 +192,23 @@
       .hidden {
         display: none;
       }
+
+      .btn-purple {
+        background-color: #9f63ff;
+        right: 200px;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        font-weight: bold;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      .btn-purple:hover {
+        background-color: #2f007c;
+        color: #fff;
+      }
+
     </style>
   </head>
   <body>
@@ -240,7 +257,7 @@
               />
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdown">
-              <a class="dropdown-item" href="/settings">Settings</a>
+              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#settingsModal">Settings</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item text-danger" href="/logout">Logout</a>
             </div>
@@ -296,6 +313,55 @@
         </div>
       </div>
     </div>
+    <!-- Settings Modal -->
+    <div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group d-flex align-items-center">
+              <label for="changeUsername" class="mr-3">Update your Display Name: </label>
+              <button class="btn btn-purple" id="changeUsernameBtn">Change Name</button>
+            </div>
+            <div class="form-group d-flex align-items-center">
+              <label for="changeEmail" class="mr-3">Update your Email: </label>
+              <button class="btn btn-purple" id="changeEmailBtn">Change Email</button>
+            </div>
+            <div class="form-group d-flex align-items-center">
+              <label for="changePassword" class="mr-3">Update your Password: </label>
+              <button class="btn btn-purple" id="changePasswordBtn">Change Password</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change Details Modal -->
+    <div class="modal fade" id="changeDetailsModal" tabindex="-1" role="dialog" aria-labelledby="changeDetailsModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="changeDetailsModalLabel">Change Details</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="text" class="form-control" id="newDetailInput" placeholder="Enter new value" />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="saveNewDetail">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
     <script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -314,6 +380,63 @@
     ></script>
 
     {% block javascript %}
+    
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+      const changeUsernameBtn = document.getElementById("changeUsernameBtn");
+      const changeEmailBtn = document.getElementById("changeEmailBtn");
+      const changePasswordBtn = document.getElementById("changePasswordBtn");
+      const changeDetailsModal = new bootstrap.Modal(document.getElementById("changeDetailsModal"));
+      const newDetailInput = document.getElementById("newDetailInput");
+      const saveNewDetail = document.getElementById("saveNewDetail");
+
+      let currentField = "";
+
+      const openChangeModal = (field) => {
+        currentField = field;
+        document.getElementById("changeDetailsModalLabel").textContent = `Change ${field}`;
+        newDetailInput.placeholder = `Enter new ${field.toLowerCase()}`;
+        newDetailInput.value = "";
+        changeDetailsModal.show();
+      };
+
+      changeUsernameBtn.addEventListener("click", () => openChangeModal("username"));
+      changeEmailBtn.addEventListener("click", () => openChangeModal("email"));
+      changePasswordBtn.addEventListener("click", () => openChangeModal("password"));
+
+      saveNewDetail.addEventListener("click", () => {
+        const updatedValue = newDetailInput.value.trim();
+        if (!updatedValue) {
+          alert("Please enter a value.");
+          return;
+        }
+
+        // Send data to backend dynamically
+        fetch(`/update-${currentField}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ value: updatedValue }),
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert(`Successfully updated ${currentField}`);
+            } else {
+              alert(`Error: ${data.message}`);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while updating the detail.');
+          });
+
+        changeDetailsModal.hide();
+      });
+    });
+    </script>
+
     <script>
       document.getElementById("navbarProfilePicture").addEventListener("click", function () {
         $('#profileModal').modal('show'); // Show modal on profile picture click
