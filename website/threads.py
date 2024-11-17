@@ -5,7 +5,12 @@ from .models import User, School, Thread, Message
 from . import db
 from sqlalchemy.sql import func
 
+
+
 thread = Blueprint('thread', __name__)
+
+
+
 
 def time_ago(timestamp):
     """Helper function to calculate how long ago a timestamp occurred."""
@@ -36,6 +41,10 @@ def view_threads():
                .filter_by(schoolId=current_user.schoolId)
                .order_by(Thread.time_stamp.desc())
                .all())
+    for thread in threads:
+        user = User.query.get(thread.created_by)
+        thread.user = user
+
 
     if request.method == 'POST':
         title = request.form.get('title')

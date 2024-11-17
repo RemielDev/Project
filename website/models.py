@@ -12,12 +12,17 @@ class Note(db.Model):
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(150), unique=True)
-    password = db.Column(db.String(150))
-    first_name = db.Column(db.String(150))
-    schoolId = db.Column(db.Integer, db.ForeignKey('school.id'))
-    notes = db.relationship('Note')
-    profile_picture = db.Column(db.String(150), nullable=True)  # New field
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(150), nullable=False)
+    first_name = db.Column(db.String(150), nullable=False)
+    profile_picture = db.Column(db.String(200), default='/static/images/default-profile.png')
+    xp = db.Column(db.Integer, default=0)  # Field for XP
+    level = db.Column(db.Integer, default=0)  # Field for Level
+    schoolId = db.Column(db.Integer, db.ForeignKey('school.id'), nullable=True)
+
+    # The UserMixin provides is_authenticated, is_active, and is_anonymous
+    # You only need to implement get_id if you need customization
+
 
 class School(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -364,3 +364,37 @@ html, body {
     font-size: 14px;
     margin-bottom: 8px;
 }
+
+
+/* Style for the popup close button */
+.popup-close-button {
+    position: absolute;
+    top: 10px; /* Position the button 10px from the top */
+    right: 10px; /* Position the button 10px from the right */
+    background: none; /* No background for the button */
+    border: none; /* Remove default border */
+    font-size: 20px; /* Make the button size readable */
+    font-weight: bold;
+    color: #333; /* Dark color for visibility */
+    cursor: pointer; /* Add a pointer cursor for better UX */
+    z-index: 1001; /* Ensure it's above other popup content */
+}
+
+.popup-close-button:hover {
+    color: #8d49fd; /* Change color on hover for feedback */
+    transform: scale(1.1); /* Slightly enlarge for hover effect */
+    transition: transform 0.2s, color 0.2s; /* Smooth transition */
+}
+
+.popup-container {
+    position: relative; /* Relative position to align close button */
+    width: 100%;
+    max-width: 600px;
+    background-color: #ffffff; /* Popup background */
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px; /* Add padding for internal content */
+    margin: 0 auto; /* Center the popup */
+    z-index: 1000; /* Ensure it's above other elements */
+}

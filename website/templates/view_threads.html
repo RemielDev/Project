@@ -1,24 +1,36 @@
 {% extends "base.html" %}
 
-{% block title %}Threads for {{ school }}{% endblock %}
+{% block title %}Threads for {{ school.name }}{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <h1 class="text-center">Threads for {{ school }}</h1>
+    <h1 class="text-center">Threads for {{ school.name }}</h1>
     <div class="threads-container mt-4">
         {% for thread in threads %}
-        <div class="thread-card border rounded p-4 mb-3" style="max-width: 800px; margin: 0 auto;">
-            <h2 class="h5">{{ thread.title }}</h2>
-            <p>{{ thread.description }}</p>
-            <small class="text-muted">Created by User ID {{ thread.created_by }} at {{ thread.time_stamp }}</small>
-            <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
-                <form action="{{ url_for('thread.thread_messages', thread_id=thread.id) }}" method="GET" class="d-inline">
-                    <button type="submit" class="btn btn-primary" style="margin-right: 10px;">Enter</button>
-                </form>
-                <button type="button" class="btn btn-dark" style="margin-right: 10px;" onclick="openScheduleModal('{{ thread.id }}')">Schedule Session</button>
-                <button type="button" class="btn btn-secondary" onclick="openViewSessionsModal('{{ thread.id }}')">See Other Sessions</button>
+        <div class="thread-card border rounded p-4 mb-3 d-flex justify-content-between align-items-center" style="max-width: 800px; margin: 0 auto;">
+            <div class="thread-details" style="flex: 1;">
+                <h2 class="h5">{{ thread.title }}</h2>
+                <p>{{ thread.description }}</p>
+                <small class="text-muted">Created by {{ thread.user.first_name if user else "Unknown User" }} <span class="formatted-time" data-timestamp="{{ thread.time_stamp }}"></span></small>
+                <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
+                    <form action="{{ url_for('thread.thread_messages', thread_id=thread.id) }}" method="GET" class="d-inline">
+                        <button type="submit" class="btn btn-primary" style="margin-right: 10px;">Enter</button>
+                    </form>
+                    <button type="button" class="btn btn-dark" style="margin-right: 10px;" onclick="openScheduleModal('{{ thread.id }}')">Schedule Session</button>
+                    <button type="button" class="btn btn-secondary" onclick="openViewSessionsModal('{{ thread.id }}')">See Other Sessions</button>
+                </div>
             </div>
+            <div class="profile" style="margin-left: 20px; text-align: center;">
+                <img 
+    src="{{ thread.user.profile_picture or url_for('static', filename='images/default-profile.png') }}" 
+    alt="Profile Picture" 
+    class="message_tab__rounded-circle mr-3" 
+    style="width: 60px; height: 60px; object-fit: cover;">
+
+               
+            </div>            
         </div>
+        
         {% endfor %}
     </div>
 
@@ -45,7 +57,7 @@
 <!-- Schedule Session Modal -->
 <div id="scheduleModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0, 0, 0, 0.5);">
     <div class="modal-content border rounded p-4" style="position:relative; max-width:500px; margin:10% auto; background:white;">
-        <button class="close-button" style="position:absolute; top:10px; right:100px; background:none; border:none; font-size:1.5rem; font-weight:bold; cursor:pointer;" onclick="closeScheduleModal()">&times;</button>
+        <button class="close-button" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:1.5rem; font-weight:bold; cursor:pointer;" onclick="closeScheduleModal()">&times;</button>
         <h3 class="text-center mb-4">Schedule a Study Session</h3>
         <form id="scheduleForm" onsubmit="addSession(event)">
             <div class="form-group">
@@ -69,7 +81,7 @@
 <!-- View Sessions Modal -->
 <div id="viewSessionsModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0, 0, 0, 0.5);">
     <div class="modal-content border rounded p-4" style="position:relative; max-width:600px; margin:10% auto; background:white;">
-        <button class="close-button" style="position:absolute; top:10px; right:100px; background:none; border:none; font-size:1.5rem; font-weight:bold; cursor:pointer;" onclick="closeViewSessionsModal()">&times;</button>
+        <button class="close-button" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:1.5rem; font-weight:bold; cursor:pointer;" onclick="closeViewSessionsModal()">&times;</button>
         <h3 class="text-center mb-4">Other Scheduled Sessions</h3>
         <div id="sessionsList" class="list-group">
             <!-- Sessions will be dynamically added here -->
@@ -78,31 +90,66 @@
 </div>
 
 <style>
-    .threads-container {
-        max-width: 1200px; /* Widened container */
-        margin: 0 auto;
-    }
-
     .thread-card {
+        display: flex;
+        
+        align-items: center;
         background-color: #f8f9fa;
         width: 100%;
-        max-width: 800px; /* Adjusted thread card width */
-        padding: 20px;
-    }
-
-    textarea {
-        resize: vertical;
-    }
-
-    .messages-container {
         max-width: 800px;
-        padding-top: 20px; /* Padding for the first message in the scrolling frame */
+        padding: 20px;
+        margin: 0 auto; /* Center the card on the page */
     }
 
-    .btn {
-        margin-right: 10px; /* Space between buttons */
+    .thread-details {
+        flex: 1;
+        margin-right: -90px;
+        text-align: center; /* Center-align the text and buttons */
+    }
+
+    .thread-details h2,
+    .thread-details p,
+    .thread-details small {
+        text-align: center; /* Center individual elements */
+    }
+
+    .thread-details .d-flex {
+        justify-content: center; /* Center the button container */
+    }
+
+    .profile {
+        margin-left: 20px;
+        text-align: center;
+        flex-shrink: 0; /* Prevent shrinking on smaller screens */
+    }
+
+    .profile img {
+        display: block;
+        width: 100px; /* Keep the profile image consistent */
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    /* Responsive adjustments for smaller screens */
+    @media (max-width: 600px) {
+        .thread-card {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile {
+            margin-left: 0;
+            margin-top: 20px;
+        }
+
+        .profile img {
+            width: 80px; /* Reduce size for smaller screens */
+            height: 80px;
+        }
     }
 </style>
+
 <script>
     const sessions = {}; // Store sessions for each thread
 
@@ -164,6 +211,49 @@
         const hour12 = hour % 12 || 12; // Convert to 12-hour format
         return `${hour12}:${minute.toString().padStart(2, '0')} ${period}`;
     }
+
+    // Helper function to format the timestamp into a readable format
+    function formatTimestamp(timestamp) {
+        const date = new Date(timestamp);
+        const now = new Date();
+        const diffMs = now - date;
+
+        const diffSeconds = Math.floor(diffMs / 1000);
+        const diffMinutes = Math.floor(diffSeconds / 60);
+        const diffHours = Math.floor(diffMinutes / 60);
+        const diffDays = Math.floor(diffHours / 24);
+
+        if (diffSeconds < 60) {
+            return "Just now";
+        } else if (diffMinutes < 60) {
+            return `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
+        } else if (diffHours < 24) {
+            return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+        } else if (diffDays < 7) {
+            return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+        } else {
+            // Format the date as "Month Day, Year, HH:MM AM/PM"
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric', 
+                hour: 'numeric', 
+                minute: 'numeric', 
+                hour12: true 
+            };
+            return date.toLocaleString('en-US', options);
+        }
+    }
+
+    // Format all timestamps on the page
+    document.addEventListener('DOMContentLoaded', () => {
+        const timeElements = document.querySelectorAll('.formatted-time');
+        timeElements.forEach(el => {
+            const timestamp = el.getAttribute('data-timestamp');
+            el.textContent = formatTimestamp(timestamp);
+        });
+    });
 </script>
+
 
 {% endblock %}
