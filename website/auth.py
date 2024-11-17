@@ -4,6 +4,8 @@ from . import db
 from flask_login import login_user, login_required, logout_user, current_user
 
 auth = Blueprint('auth', __name__)
+thread = Blueprint('thread', __name__)
+
 
 # Login Route
 @auth.route('/login', methods=['GET', 'POST'])
@@ -17,7 +19,7 @@ def login():
             if user.password == password:
                 flash('Logged in successfully!', category='success')
                 login_user(user, remember=True)
-                return redirect(url_for('views.home'))
+                return redirect(url_for('thread.view_threads'))
             else:
                 flash('Incorrect password, try again.', category='error')
         else:
@@ -61,7 +63,7 @@ def sign_up():
             db.session.commit()
             login_user(new_user, remember=True)
             flash('Account created successfully!', category='success')
-            return redirect(url_for('views.home'))
+            return redirect(url_for('thread.view_threads'))
 
     return render_template("sign_up.html", user=current_user, schools=schools)
 

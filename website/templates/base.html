@@ -68,7 +68,10 @@
         <ul class="navbar-nav ml-auto">
           {% if user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" id="home" href="/">Home</a>
+            <a class="nav-link" id="home" href="/notes">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="threads" href="/">Threads</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" id="logout" href="/logout">Logout</a>

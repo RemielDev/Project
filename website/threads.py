@@ -7,9 +7,10 @@ from sqlalchemy.sql import func
 thread = Blueprint('thread', __name__)
 
 
-@thread.route('/threads', methods=['GET', 'POST'])
+@thread.route('/', methods=['GET', 'POST'])
 @login_required
 def view_threads():
+    
     # Get threads associated with the user's school
     school = School.query.get(current_user.schoolId)
     threads = Thread.query.filter_by(school_id=current_user.schoolId).order_by(Thread.time_stamp.desc()).all()
@@ -24,7 +25,8 @@ def view_threads():
         elif not description or len(description) < 10:
             flash('Thread description must be at least 10 characters.', category='error')
         elif any(thread.title == title for thread in threads):
-            return redirect(url_for('thread.view_threads'))  # Do not flash for existing database threads
+            return redirect(url_for('thread.view_threads'))
+
         else:
             # Create new thread
             new_thread = Thread(
@@ -39,6 +41,7 @@ def view_threads():
             db.session.commit()
             flash('Thread created successfully THROUGH DATABASE!', category='success')
             return redirect(url_for('thread.view_threads'))
+
 
     return render_template('view_threads.html', user=current_user, threads=threads, school=school)
 
