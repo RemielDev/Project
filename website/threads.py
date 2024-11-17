@@ -30,7 +30,7 @@ def time_ago(timestamp):
     else:
         return "Just now"
 
-@thread.route('/', methods=['GET', 'POST'])
+@thread.route('/threads', methods=['GET', 'POST'])
 @login_required
 def view_threads():
     # Get the user's school

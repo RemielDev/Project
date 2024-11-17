@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study CCC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="welcome.css"> -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            background-color: #f4f7fa;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .scroll-bar {
+            overflow-y: scroll;
+            overflow-x: hidden;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            max-height: 500px;
+            /* Limit the height of the scrollable area /
+    padding: 20px;
+    border: 1px solid #ddd; / Optional: to distinguish the boundary of the scrollable area */
+        }
+
+        .scroll-bar::-webkit-scrollbar {
+            width: 12px;
+            border-radius: 4px;
+        }
+
+        .scroll-bar::-webkit-scrollbar-thumb {
+            background: linear-gradient(#9bbfff, #5e8ddd, #5b8ada);
+            border: 1.5px solid #4f6cac;
+        }
+
+        .scroll-bar::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 5px grey;
+            background-color: #d2ebf7;
+        }
+
+        .scroll-bar::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(#a4c9ff, #b0d8ff, #9ec9fa, #8db8f1, #6a99ea, #608fe2);
+        }
+
+
+        .navbar {
+            background: linear-gradient(90deg, #421193, #8149dc);
+            color: #fff;
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar:hover {
+            background: linear-gradient(90deg, #6b28d6, #aa81ec);
+        }
+
+        .navbar .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .navbar .nav-links a {
+            margin-left: 20px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+
+        .navbar .nav-links a:hover {
+            color: #ffeb3b;
+        }
+
+        .navbar .nav-links a:active {
+            color: #fff7b9;
+        }
+
+
+        .hero {
+            background: linear-gradient(to bottom, #8149dc, #8149dc);
+            color: #fff;
+            text-align: center;
+            padding: 80px 20px;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .cta-button {
+            background: #ffeb3b;
+            color: #333;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background: #f1d600;
+        }
+
+        .cta-button:active {
+            background: #ffef77;
+        }
+
+        .info-section,
+        .schools-section,
+        .offerings-section {
+            background: #fff;
+            padding: 40px 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-section h2,
+        .schools-section h2,
+        .offerings-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .info-section p,
+        .schools-section ul,
+        .offerings-section ul {
+            font-size: 1rem;
+        }
+
+        .schools-section ul,
+        .offerings-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .schools-section li,
+        .offerings-section li {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f4f7fa;
+            border-radius: 5px;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        li {
+            max-width: 600px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="container">
+            <a class="navbar-brand" href="/">Study CCC</a>
+            <nav class="nav-links">
+                <a href="#info">Info</a>
+                <a href="#schools">Schools</a>
+                <a href="#offerings">What We Offer</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container hero-content">
+            <h1>Welcome to Study CCC</h1>
+            <p>Your partner in helping California Community College students succeed.</p>
+            <a href="sign-up" class="cta-button">
+                <button class="cta-button">Get Started</button>
+            </a>
+        </div>
+    </section>
+
+    <section id="info" class="info-section fade-in">
+        <div class="container">
+            <h2>About Us</h2>
+            <p>
+                Study CCC is an innovative platform designed for California Community College students to connect with
+                peers and form study groups. Tackle challenging subjects, prepare for exams, and collaborate on
+                assignments with ease.
+            </p>
+        </div>
+    </section>
+
+    <section id="schools" class="schools-section fade-in">
+        <div class="scroll-bar">
+            <h2>Included Schools</h2>
+            <ul>
+                <li>Allan Hancock College</li>
+                <li>American River College</li>
+                <li>Antelope Valley College</li>
+                <li>Bakersfield College</li>
+                <li>Barstow Community College</li>
+                <li>Berkeley City College</li>
+                <li>Butte College</li>
+                <li>Cabrillo College</li>
+                <li>CaÃ±ada College</li>
+                <li>Cerritos College</li>
+                <li>Chabot College</li>
+                <li>Chaffey College</li>
+                <li>Citrus College</li>
+                <li>City College of San Francisco</li>
+                <li>Clovis Community College</li>
+                <li>Coastline College</li>
+                <li>College of Alameda</li>
+                <li>College of Marin</li>
+                <li>College of San Mateo</li>
+                <li>College of the Canyons</li>
+                <li>College of the Desert</li>
+                <li>College of the Redwoods</li>
+                <li>College of the Sequoias</li>
+                <li>Columbia College</li>
+                <li>Contra Costa College</li>
+                <li>Copper Mountain College</li>
+                <li>Cosumnes River College</li>
+                <li>Crafton Hills College</li>
+                <li>Cuesta College</li>
+                <li>Cuyamaca College</li>
+                <li>Cypress College</li>
+                <li>De Anza College</li>
+                <li>Diablo Valley College</li>
+                <li>East Los Angeles College</li>
+                <li>El Camino College</li>
+                <li>Evergreen Valley College</li>
+                <li>Feather River College</li>
+                <li>Folsom Lake College</li>
+                <li>Foothill College</li>
+                <li>Fresno City College</li>
+                <li>Fullerton College</li>
+                <li>Gavilan College</li>
+                <li>Glendale Community College</li>
+                <li>Golden West College</li>
+                <li>Grossmont College</li>
+                <li>Hartnell College</li>
+                <li>Imperial Valley College</li>
+                <li>Irvine Valley College</li>
+                <li>Lake Tahoe Community College</li>
+                <li>Laney College</li>
+                <li>Las Positas College</li>
+                <li>Lassen College</li>
+                <li>Long Beach City College</li>
+                <li>Los Angeles City College</li>
+                <li>Los Angeles Harbor College</li>
+                <li>Los Angeles Mission College</li>
+                <li>Los Angeles Pierce College</li>
+                <li>Los Angeles Southwest College</li>
+                <li>Los Angeles Trade-Tech College</li>
+                <li>Los Angeles Valley College</li>
+                <li>Los Medanos College</li>
+                <li>Madera Community College</li>
+                <li>Marin College</li>
+                <li>Merritt College</li>
+                <li>MiraCosta College</li>
+                <li>Mission College</li>
+                <li>Modesto Junior College</li>
+                <li>Monterey Peninsula College</li>
+                <li>Mt. San Antonio College</li>
+                <li>Mt. San Jacinto College</li>
+                <li>Napa Valley College</li>
+                <li>Norco College</li>
+                <li>Ohlone College</li>
+                <li>Orange Coast College</li>
+                <li>Oxnard College</li>
+                <li>Palo Verde College</li>
+                <li>Palomar College</li>
+                <li>Pasadena City College</li>
+                <li>Porterville College</li>
+                <li>Reedley College</li>
+                <li>Rio Hondo College</li>
+                <li>Riverside City College</li>
+                <li>Saddleback College</li>
+                <li>San Bernardino Valley College</li>
+                <li>San Diego City College</li>
+                <li>San Diego Mesa College</li>
+                <li>San Diego Miramar College</li>
+                <li>San Francisco City College</li>
+                <li>San Joaquin Delta College</li>
+                <li>San Jose City College</li>
+                <li>Santa Ana College</li>
+                <li>Santa Barbara City College</li>
+                <li>Santa Monica College</li>
+                <li>Santa Rosa Junior College</li>
+                <li>Santiago Canyon College</li>
+                <li>Shasta College</li>
+                <li>Sierra College</li>
+                <li>Skyline College</li>
+                <li>Solano Community College</li>
+                <li>Southwestern College</li>
+                <li>Taft College</li>
+                <li>Ventura College</li>
+                <li>Victor Valley College</li>
+                <li>West Hills College Coalinga</li>
+                <li>West Hills College Lemoore</li>
+                <li>West Los Angeles College</li>
+                <li>West Valley College</li>
+                <li>Woodland Community College</li>
+                <li>Yuba College</li>
+            </ul>
+
+
+        </div>
+    </section>
+
+    <section id="offerings" class="offerings-section fade-in">
+        <div class="container">
+            <h2>What We Offer</h2>
+            <ul>
+                <li>Search for Study Groups: Filter by course, campus, or topic to find the perfect group.</li>
+                <li>Create Your Own Group: Host study sessions and invite classmates to join.</li>
+                <li>Access Study Resources: Share notes, links, and tips within your group.</li>
+            </ul>
+        </div>
+    </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('.fade-in');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            elements.forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+
+</html>
