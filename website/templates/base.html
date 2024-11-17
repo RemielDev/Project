@@ -315,142 +315,63 @@
 
     {% block javascript %}
     <script>
-      document.getElementById("navbarProfilePicture").addEventListener("click", function () {
-        $('#profileModal').modal('show'); // Show modal on profile picture click
-      });
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const flashMessages = document.querySelectorAll(".flash-message");
-        flashMessages.forEach((message) => {
-          setTimeout(() => {
-            message.classList.remove("show");
-            message.addEventListener("transitionend", () => {
-              message.remove();
-            });
-          }, 4000);
-        });
-      });
-
-      let currentXp = 0;
-      let currentLevel = 0;
-      const xpPerLevel = 100;
-      const coinsAudio = new Audio("{{ url_for('static', filename='audio/coins.mp3') }}");
-      //xp stuff
-      document.getElementById("addXpBtn").addEventListener("click", function () {
-        currentXp += 25;
-        coinsAudio.play()
-        if (currentXp >= xpPerLevel) {
-          currentXp -= xpPerLevel;
-          currentLevel++;
-        }
-        const xpFraction = (currentXp / xpPerLevel) * 100;
-        document.getElementById("xpBarFill").style.width = `${xpFraction}%`;
-        document.getElementById("levelDisplay").textContent = `Level: ${currentLevel}`;
-
-        console.log(`Current Level: ${currentLevel}, XP: ${currentXp}`);
-      });
-
-      //confetti stuff
-      document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
         let currentXp = 0;
         let currentLevel = 0;
         const xpPerLevel = 100;
 
-
-        const addXpBtn = document.getElementById("addXpBtn");
         const xpBarFill = document.getElementById("xpBarFill");
         const levelDisplay = document.getElementById("levelDisplay");
+        const addXpBtn = document.getElementById("addXpBtn");
 
-        const confettiLeft = document.createElement("img");
-        confettiLeft.src = "{{ url_for('static', filename='images/confetti.gif') }}";
-        confettiLeft.classList.add("confetti", "left");
+        // Fetch user data on load
+        fetch('/get_user_data')
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Not logged in');
+          })
+          .then(data => {
+            currentXp = data.xp;
+            currentLevel = data.level;
+            const xpFraction = (currentXp / (xpPerLevel*currentLevel*0.8)) * 100*currentLevel;
 
-        const confettiRight = document.createElement("img");
-        confettiRight.src = "{{ url_for('static', filename='images/confetti.gif') }}";
-        confettiRight.classList.add("confetti", "right");
+            xpBarFill.style.width = `${xpFraction}%`;
+            levelDisplay.textContent = `Level: ${currentLevel}`;
+          })
+          .catch(error => {
+            console.error('Error fetching user data:', error);
+            document.querySelector('.leveling-system').style.display = 'none'; // Hide level bar if not logged in
+          });
 
-        document.body.appendChild(confettiLeft);
-        document.body.appendChild(confettiRight);
-
-        const showConfetti = () => {
-          confettiLeft.style.display = "block";
-          confettiRight.style.display = "block";
-
-          setTimeout(() => {
-            confettiLeft.style.display = "none";
-            confettiRight.style.display = "none";
-          }, 2000); // Hide after 2 seconds
-        };
-
+        // Add XP button functionality
         addXpBtn.addEventListener("click", function () {
-          currentXp += 25;
+          const xpToAdd = 25;
+          currentXp += xpToAdd;
 
           if (currentXp >= xpPerLevel) {
             currentXp -= xpPerLevel;
             currentLevel++;
-            showConfetti();
-
           }
 
           const xpFraction = (currentXp / xpPerLevel) * 100;
           xpBarFill.style.width = `${xpFraction}%`;
           levelDisplay.textContent = `Level: ${currentLevel}`;
 
-          console.log(`Current Level: ${currentLevel}, XP: ${currentXp}`);
-        });
-      });
-
-      //trophy stuff
-      document.addEventListener("DOMContentLoaded", function () {
-        let currentXp = 0;
-        let currentLevel = 0;
-        const xpPerLevel = 100;
-        const levelUpAudio = new Audio("{{ url_for('static', filename='audio/level up.mp3') }}");
-
-        const addXpBtn = document.getElementById("addXpBtn");
-        const xpBarFill = document.getElementById("xpBarFill");
-        const levelDisplay = document.getElementById("levelDisplay");
-
-        // Create the trophy element
-        const trophy = document.createElement("img");
-        trophy.src = "{{ url_for('static', filename='images/trophy1.png') }}"; // Start with the first image
-        trophy.classList.add("trophy", "hidden");
-        document.body.appendChild(trophy);
-
-        const showTrophy = () => {
-          trophy.classList.remove("hidden");
-
-          // Alternate between the two trophy images
-          let isImageOne = true;
-          const alternateInterval = setInterval(() => {
-            trophy.src = isImageOne
-              ? "{{ url_for('static', filename='images/trophy2.png') }}"
-              : "{{ url_for('static', filename='images/trophy1.png') }}";
-            isImageOne = !isImageOne;
-          }, 200); // Alternate every 200ms
-
-          // Stop alternation after 2 seconds
-          setTimeout(() => {
-            clearInterval(alternateInterval);
-            trophy.classList.add("hidden");
-          }, 2000);
-        };
-
-        // Event listener for the Add XP button
-        addXpBtn.addEventListener("click", function () {
-          currentXp += 25; // Add 25 XP per click
-          // Check for level-up
-          if (currentXp >= xpPerLevel) {
-            currentXp -= xpPerLevel; // Subtract the XP used to level up
-            currentLevel++; // Increase the level
-            levelUpAudio.play()
-            showTrophy(); // Show the trophy animation
-          }
-
-          // Update the XP bar and level display
-          const xpFraction = (currentXp / xpPerLevel) * 100;
-          xpBarFill.style.width = `${xpFraction}%`;
-          levelDisplay.textContent = `Level: ${currentLevel}`;
+          // Send XP and level updates to the backend
+          fetch('/update_xp', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ xp: xpToAdd }),
+          })
+            .then(response => response.json())
+            .then(data => {
+              console.log(`Updated Level: ${data.level}, XP: ${data.xp}`);
+            })
+            .catch(error => console.error('Error updating XP:', error));
         });
       });
     </script>

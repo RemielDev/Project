@@ -157,14 +157,23 @@ def login():
 def sign_up():
 
     if request.method == 'POST':
+        
         email = request.form.get('email').lower()
         first_name = request.form.get('firstName')
-        school_name = request.form.get('schoolId')
+        school_name = request.form.get('schoolId')  # Fetch selected school
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
-        profile_picture = request.files.get('profilePicture')  # Handle uploaded file
+        profile_picture = request.files.get('profilePicture')
 
-        # Check if the school exists in the database
+        print(f"Selected school: {school_name}")  # Debugging
+
+
+        if not school_name or school_name not in schools:
+            flash('Invalid school selected.', category='error')
+            return render_template("sign_up.html", user=current_user, schools=schools)
+
+
+        # Check if school exists
         school = School.query.filter_by(name=school_name).first()
         if not school:
             school = School(name=school_name)

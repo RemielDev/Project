@@ -23,11 +23,13 @@ def create_app():
     from .views import views
     from .auth import auth
     from .threads import thread
-
-
+    from .xp import xp
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(thread, url_prefix='/')
+    app.register_blueprint(xp, url_prefix='/')
+
+
 
     def time_ago(timestamp):
         """Calculate how long ago a timestamp occurred."""
