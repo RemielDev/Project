@@ -33,14 +33,14 @@ def sign_up():
     if request.method == 'POST':
         email = request.form.get('email').lower()
         first_name = request.form.get('firstName')
-        school_id = request.form.get('schoolId')
+        school_name = request.form.get('schoolId')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
 
         # Check if the school exists in the database
-        school = School.query.filter_by(name=school_id).first()
+        school = School.query.filter_by(name=school_name).first()
         if not school:
-            school = School(name=school_id)
+            school = School(name=school_name)
             db.session.add(school)
             db.session.commit()
 
@@ -63,7 +63,7 @@ def sign_up():
             flash('Account created successfully!', category='success')
             return redirect(url_for('views.home'))
 
-    return render_template("login.html", user=current_user, schools=schools)
+    return render_template("sign_up.html", user=current_user, schools=schools)
 
 # Logout Route
 @auth.route('/logout')
