@@ -31,11 +31,55 @@ def view_threads():
     # Get the user's school
     school = School.query.get(current_user.schoolId)
 
-    # Fetch threads associated with the user's school
+    # Fetch threads and include the creator's information
     threads = (Thread.query
                .filter_by(schoolId=current_user.schoolId)
                .order_by(Thread.time_stamp.desc())
                .all())
+
+    for thread in threads:
+        thread.creator = User.query.get(thread.created_by)  # Attach user details
+
+    if request.method == 'POST':
+        title = request.form.get('title')
+        description = request.form.get('description')
+
+        if not title or len(title.strip()) < 3:
+            flash('Thread title must be at least 3 characters.', category='error')
+        elif not description or len(description.strip()) < 10:
+            flash('Thread description must be at least 10 characters.', category='error')
+        elif any(thread.title.strip().lower() == title.strip().lower() for thread in threads):
+            flash('A thread with this title already exists.', category='error')
+        else:
+            new_thread = Thread(
+                title=title.strip(),
+                description=description.strip(),
+                schoolId=current_user.schoolId,
+                created_by=current_user.id,
+                time_stamp=func.now()
+            )
+
+            db.session.add(new_thread)
+            db.session.commit()
+
+            flash('Thread created successfully!', category='success')
+            return redirect(url_for('thread.view_threads'))
+
+        return render_template('view_threads.html', user=current_user, threads=threads, school=school)
+
+    # Get the user's school
+    school = School.query.get(current_user.schoolId)
+
+    # Fetch threads associated with the user's school
+    threads = (Thread.query
+           .filter_by(schoolId=current_user.schoolId)
+           .order_by(Thread.time_stamp.desc())
+           .all())
+
+# Attach user information to each thread
+    for thread in threads:
+        thread.created_by = User.query.get(thread.created_by)
+
 
     if request.method == 'POST':
         title = request.form.get('title')

@@ -26,11 +26,13 @@ class School(db.Model):
 
 class Thread(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    schoolId = db.Column(db.Integer, db.ForeignKey('school.id'))
-    title = db.Column(db.String(150), unique=True)
-    description = db.Column(db.String(500))  # Added description field
-    created_by = db.Column(db.Integer, db.ForeignKey('user.id'))  # Added creator field
-    time_stamp = db.Column(db.DateTime(timezone=True), default=func.now())  # Added timestamp
+    title = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    schoolId = db.Column(db.Integer, db.ForeignKey('school.id'), nullable=False)
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # ForeignKey to User
+    time_stamp = db.Column(db.DateTime, server_default=func.now(), nullable=False)
+
+    creator = db.relationship('User', backref='threads', lazy=True)  # Relationship to User
 
     
 class Message(db.Model):

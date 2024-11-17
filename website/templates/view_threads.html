@@ -1,21 +1,35 @@
 {% extends "base.html" %}
 
-{% block title %}Threads for {{ school }}{% endblock %}
+{% block title %}Threads for {{ school.name }}{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <h1 class="text-center">Threads for {{ school }}</h1>
+    <h1 class="text-center">Threads for {{ school.name }}</h1>
     <div class="threads-container mt-4">
         {% for thread in threads %}
         <div class="thread-card border rounded p-4 mb-3" style="max-width: 800px; margin: 0 auto;">
-            <h2 class="h5">{{ thread.title }}</h2>
-            <p>{{ thread.description }}</p>
-            <small class="text-muted">Created by User ID {{ thread.created_by }} at {{ thread.time_stamp }}</small>
-            <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
-                <form action="{{ url_for('thread.thread_messages', thread_id=thread.id) }}" method="GET" class="d-inline">
-                    <button type="submit" class="btn btn-primary" style="margin-right: 10px;">Enter</button>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="h5">{{ thread.title }}</h2>
+                    <p>{{ thread.description }}</p>
+                    <small class="text-muted">
+                        Created by {{ thread.creator.first_name if thread.creator else "Unknown User" }} 
+                        at {{ thread.time_stamp }}
+                    </small>
+                </div>
+                <div>
+                    <img 
+                        src="{{ thread.creator.profile_picture or url_for('static', filename='images/default-profile.png') }}" 
+                        alt="Profile Picture" 
+                        class="rounded-circle" 
+                        style="width: 50px; height: 50px; object-fit: cover;">
+                </div>
+            </div>
+            <div class="d-flex justify-content-center align-items-center gap-3 mt-3">
+                <form action="{{ url_for('thread.thread_messages', thread_id=thread.id) }}" method="GET">
+                    <button type="submit" class="btn btn-primary">Enter</button>
                 </form>
-                <button type="button" class="btn btn-dark" style="margin-right: 10px;" onclick="openScheduleModal('{{ thread.id }}')">Schedule Session</button>
+                <button type="button" class="btn btn-dark" onclick="openScheduleModal('{{ thread.id }}')">Schedule Session</button>
                 <button type="button" class="btn btn-secondary" onclick="openViewSessionsModal('{{ thread.id }}')">See Other Sessions</button>
             </div>
         </div>
@@ -42,10 +56,12 @@
     </div>
 </div>
 
+
+<!-- Schedule Session Modal -->
 <!-- Schedule Session Modal -->
 <div id="scheduleModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0, 0, 0, 0.5);">
     <div class="modal-content border rounded p-4" style="position:relative; max-width:500px; margin:10% auto; background:white;">
-        <button class="close-button" style="position:absolute; top:10px; right:100px; background:none; border:none; font-size:1.5rem; font-weight:bold; cursor:pointer;" onclick="closeScheduleModal()">&times;</button>
+        <button class="close-button" onclick="closeScheduleModal()">&times;</button>
         <h3 class="text-center mb-4">Schedule a Study Session</h3>
         <form id="scheduleForm" onsubmit="addSession(event)">
             <div class="form-group">
@@ -69,13 +85,14 @@
 <!-- View Sessions Modal -->
 <div id="viewSessionsModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0, 0, 0, 0.5);">
     <div class="modal-content border rounded p-4" style="position:relative; max-width:600px; margin:10% auto; background:white;">
-        <button class="close-button" style="position:absolute; top:10px; right:100px; background:none; border:none; font-size:1.5rem; font-weight:bold; cursor:pointer;" onclick="closeViewSessionsModal()">&times;</button>
+        <button class="close-button" onclick="closeViewSessionsModal()">&times;</button>
         <h3 class="text-center mb-4">Other Scheduled Sessions</h3>
         <div id="sessionsList" class="list-group">
             <!-- Sessions will be dynamically added here -->
         </div>
     </div>
 </div>
+
 
 <style>
     .threads-container {

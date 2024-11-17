@@ -164,10 +164,15 @@ def sign_up():
         password2 = request.form.get('password2')
         profile_picture = request.files.get('profilePicture')  # Handle uploaded file
 
-        # Check if the school exists in the database
-        school = School.query.filter_by(name=school_name).first()
+        if not school_name or school_name.strip() == "":
+            flash('Please select a valid school.', category='error')
+            return redirect(url_for('auth.sign_up'))
+
+        # Check if the school exists (case-insensitive comparison)
+        school = School.query.filter(School.name.ilike(school_name.strip())).first()
         if not school:
-            school = School(name=school_name)
+            # Create the school if it doesn't exist
+            school = School(name=school_name.strip())
             db.session.add(school)
             db.session.commit()
 
