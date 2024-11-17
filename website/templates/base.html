@@ -334,10 +334,11 @@
       let currentXp = 0;
       let currentLevel = 0;
       const xpPerLevel = 100;
-
+      const coinsAudio = new Audio("{{ url_for('static', filename='audio/coins.mp3') }}");
       //xp stuff
       document.getElementById("addXpBtn").addEventListener("click", function () {
         currentXp += 25;
+        coinsAudio.play()
         if (currentXp >= xpPerLevel) {
           currentXp -= xpPerLevel;
           currentLevel++;
@@ -354,6 +355,7 @@
         let currentXp = 0;
         let currentLevel = 0;
         const xpPerLevel = 100;
+
 
         const addXpBtn = document.getElementById("addXpBtn");
         const xpBarFill = document.getElementById("xpBarFill");
@@ -387,6 +389,7 @@
             currentXp -= xpPerLevel;
             currentLevel++;
             showConfetti();
+
           }
 
           const xpFraction = (currentXp / xpPerLevel) * 100;
@@ -402,6 +405,7 @@
         let currentXp = 0;
         let currentLevel = 0;
         const xpPerLevel = 100;
+        const levelUpAudio = new Audio("{{ url_for('static', filename='audio/level up.mp3') }}");
 
         const addXpBtn = document.getElementById("addXpBtn");
         const xpBarFill = document.getElementById("xpBarFill");
@@ -435,11 +439,11 @@
         // Event listener for the Add XP button
         addXpBtn.addEventListener("click", function () {
           currentXp += 25; // Add 25 XP per click
-
           // Check for level-up
           if (currentXp >= xpPerLevel) {
             currentXp -= xpPerLevel; // Subtract the XP used to level up
             currentLevel++; // Increase the level
+            levelUpAudio.play()
             showTrophy(); // Show the trophy animation
           }
 
@@ -454,5 +458,8 @@
     {% endblock %}
     <img src="{{ url_for('static', filename='images/confetti.gif') }}" alt="Confetti Explosion" class="confetti left">
     <img src="{{ url_for('static', filename='images/confetti.gif') }}" alt="Confetti Explosion Mirrored" class="confetti right">
+    <audio id="coinsSound" src="{{ url_for('static', filename='audio/coins.mp3') }}" preload="auto"></audio>
+    <audio id="levelUpSound" src="{{ url_for('static', filename='audio/level_up.mp3') }}" preload="auto"></audio>
+
   </body>
 </html>
