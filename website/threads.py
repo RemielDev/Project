@@ -30,7 +30,7 @@ def view_threads():
             new_thread = Thread(
                 title=title,
                 description=description,
-                school_id=current_user.schoolId,  # Associate with the user's school
+                school_id=current_user.school_id,  # Associate with the user's school
                 created_by=current_user.id,  # Save creator's user ID
                 time_stamp=func.now()
             )
@@ -49,8 +49,14 @@ def thread_messages(thread_id):
     thread = Thread.query.get_or_404(thread_id)
     messages = Message.query.filter_by(thread_id=thread_id).order_by(Message.time_stamp.asc()).all()
 
+    for i in messages:
+        print(i)
+
+
     if request.method == 'POST':
         content = request.form.get('content')
+
+
 
         # Validate message content
         if not content or len(content.strip()) == 0:
@@ -59,12 +65,14 @@ def thread_messages(thread_id):
             # Create new message
             new_message = Message(
                 thread_id=thread_id,
-                user_id=current_user.id,
+                user_id=current_user.first_name,
                 content=content.strip(),
                 time_stamp=func.now()
             )
             db.session.add(new_message)
             db.session.commit()
-            return redirect(url_for('thread.thread_messages', thread_id=thread_id))
 
+            return redirect(url_for('thread.thread_messages', thread_id=thread_id))
+            
+           
     return render_template('thread_messages.html', thread=thread, messages=messages, user=current_user)

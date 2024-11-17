@@ -1,28 +1,94 @@
-{% extends "base.html" %} {% block title %}Login{% endblock %} {% block content
-%}
-<form method="POST">
-  <h3 align="center">Login</h3>
-  <div class="form-group">
-    <label for="email">Email Address</label>
-    <input
-      type="email"
-      class="form-control"
-      id="email"
-      name="email"
-      placeholder="Enter email"
-    />
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="login-signup-frame">
+  <div class="form-container">
+    <p class="title">Welcome back</p>
+    <form method="POST" class="form">
+      <div class="form-group">
+        <input type="email" class="form-control input" id="email" name="email" placeholder="Enter email" required>
+      </div>
+      <div class="form-group">
+        <input type="password" class="form-control input" id="password" name="password" placeholder="Enter password" required>
+      </div>
+      <p class="page-link">
+        <span class="page-link-label"><a href="#">Forgot Password?</a></span>
+      </p>
+      <div class="buttons-container">
+        <button type="submit" class="btn btn-primary form-btn">Log in</button>
+        <button type="button" class="btn btn-secondary form-btn" onclick="redirectToSignUp()">Sign Up</button>
+      </div>
+    </form>
   </div>
-  <div class="form-group">
-    <label for="password">Password</label>
-    <input
-      type="password"
-      class="form-control"
-      id="password"
-      name="password"
-      placeholder="Enter password"
-    />
+
+  <div id="sign-up-section" style="display:none">
+    <form method="POST">
+      <h3 align="center">Sign Up</h3>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          name="email"
+          placeholder="Enter email"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="firstName"
+          name="firstName"
+          placeholder="Enter first name"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="schoolId">Select a School:</label>
+        <select name="schoolId" id="schoolId" class="form-control" required>
+          {% for school in schools %}
+            <option value="{{ school }}">{{ school }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="password1">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password1"
+          name="password1"
+          placeholder="Enter password"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="password2">Password (Confirm)</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password2"
+          name="password2"
+          placeholder="Confirm password"
+          required
+        />
+      </div>
+      <br />
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
   </div>
-  <br />
-  <button type="submit" class="btn btn-primary">Login</button>
-</form>
+</div>
+
+<script>
+  function redirectToSignUp() {
+    document.querySelector('.form-container').style.display = 'none';
+    document.getElementById('sign-up-section').style.display = 'block';
+  }
+</script>
+
 {% endblock %}
