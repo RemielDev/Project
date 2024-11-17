@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study CCC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style1.css">
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="container">
+            <a class="navbar-brand" href="/">Study CCC</a>
+            <nav class="nav-links">
+                <a href="#info">Info</a>
+                <a href="#schools">Schools</a>
+                <a href="#offerings">What We Offer</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container hero-content">
+            <h1>Welcome to Study CCC</h1>
+            <p>Your partner in helping California Community College students succeed.</p>
+            <button class="cta-button" >Get Started</button>
+        </div>
+    </section>
+
+    <section id="info" class="info-section fade-in">
+        <div class="container">
+            <h2>About Us</h2>
+            <p>
+                Study CCC is an innovative platform designed for California Community College students to connect with
+                peers and form study groups. Tackle challenging subjects, prepare for exams, and collaborate on
+                assignments with ease.
+            </p>
+        </div>
+    </section>
+
+    <section id="schools" class="schools-section fade-in">
+        <div class="container">
+            <h2>Included Schools</h2>
+            <ul>
+                <li>Los Angeles Pierce College</li>
+                <li>Sacramento City College</li>
+                <li>San Diego Mesa College</li>
+                <li>Fresno City College</li>
+                <li>Santa Monica College</li>
+                <li>Los Angeles Mission College</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="offerings" class="offerings-section fade-in">
+        <div class="container">
+            <h2>What We Offer</h2>
+            <ul>
+                <li>Search for Study Groups: Filter by course, campus, or topic to find the perfect group.</li>
+                <li>Create Your Own Group: Host study sessions and invite classmates to join.</li>
+                <li>Access Study Resources: Share notes, links, and tips within your group.</li>
+            </ul>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Study CCC. All Rights Reserved.</p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('.fade-in');
+    
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.2 });
+    
+            elements.forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+
+</html>
+
+
+

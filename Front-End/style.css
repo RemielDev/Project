@@ -1,0 +1,32 @@
+html{
+    height: 100%;
+    width: 100%;
+    font-family: Annie Use Your Telescope; 
+    background: linear-gradient(#fdca40, #fdd35d,#99b8ff, #3772ff); 
+}
+#first{
+    font-size: 60px;
+    position: absolute; 
+    right: 60px;
+    top: 30px; 
+}
+
+#second{
+    font-size: 30px;
+    position: absolute; 
+    right: 130px;
+    top: 90px; 
+}
+
+#third{
+    font-size: 35px;
+    position: absolute; 
+    right: 115px;
+    top: 120px; 
+}
+#title1{
+    font-size: 40px;
+}
+#image1{
+    width: 300px; 
+}

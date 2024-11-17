@@ -21,6 +21,65 @@
 
    
     <style>
+    
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      padding: 0.5rem 1rem;
+    }
+
+    .leveling-system {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      z-index: 1;
+    }
+
+    .xp-bar {
+      background-color: white;
+      border-radius: 15px;
+      overflow: hidden;
+      width: 300px;
+      height: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .xp-bar-fill {
+      background-color: #d6b3ff;
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .add-xp-btn {
+      background-color: #fff;
+      color: #2f007c;
+      border: 1px solid #9f63ff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      margin-right: 10px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .add-xp-btn:hover {
+      background-color: #9f63ff;
+      color: #fff;
+    }
+
+    .level-display {
+      color: #fff;
+      font-weight: bold;
+      margin-left: 15px;
+      min-width: 80px; /* Ensures the level display area has a fixed width */
+      text-align: center; /* Centers the level text within the allocated space */
+    }
+
       .navbar {
         background: linear-gradient(90deg, #2f007c, #9f63ff);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -87,9 +146,73 @@
       .dropdown-menu {
         text-align: center;
       }
+
+      /* Confetti styling */
+      .confetti {
+        position: fixed;
+        bottom: 0;
+        width: 500px; /* Larger size */
+        height: auto;
+        z-index: 999; /* Ensure it is on top of most elements */
+        display: none; /* Hidden by default */
+      }
+
+      .confetti.left {
+        left: -50px;
+        bottom: -50px;
+      }
+
+      .confetti.right {
+        right: -50px;
+        bottom: -50px;
+        transform: scaleX(-1); /* Mirror horizontally */
+      }
+
+      /* Trophy animation */
+      .trophy {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 50px; /* Start small */
+        height: auto;
+        transform: translate(-50%, -50%) scale(0); /* Start in the center, invisible */
+        z-index: 1000;
+        animation: enlargeTrophy 5s forwards;
+      }
+
+      @keyframes enlargeTrophy {
+        from {
+          transform: translate(-50%, -50%) scale(0);
+        }
+        to {
+          transform: translate(-50%, -50%) scale(10);
+        }
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .btn-purple {
+        background-color: #9f63ff;
+        right: 200px;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        font-weight: bold;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      .btn-purple:hover {
+        background-color: #2f007c;
+        color: #fff;
+      }
+
     </style>
   </head>
   <body>
+    
     <nav class="navbar navbar-expand-lg">
       <a class="navbar-brand" href="/">StudyCCC</a>
       <button
@@ -100,6 +223,13 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
+      <div class="leveling-system">
+        <button class="add-xp-btn" id="addXpBtn">+25 XP</button>
+        <div class="xp-bar">
+          <div class="xp-bar-fill" id="xpBarFill"></div>
+        </div>
+        <span class="level-display" id="levelDisplay">Level: 0</span>
+      </div>
       <div class="collapse navbar-collapse" id="navbar">
         <ul class="navbar-nav">
           {% if user.is_authenticated %}
@@ -127,7 +257,7 @@
               />
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdown">
-              <a class="dropdown-item" href="/settings">Settings</a>
+              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#settingsModal">Settings</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item text-danger" href="/logout">Logout</a>
             </div>
@@ -183,6 +313,55 @@
         </div>
       </div>
     </div>
+    <!-- Settings Modal -->
+    <div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group d-flex align-items-center">
+              <label for="changeUsername" class="mr-3">Update your Display Name: </label>
+              <button class="btn btn-purple" id="changeUsernameBtn">Change Name</button>
+            </div>
+            <div class="form-group d-flex align-items-center">
+              <label for="changeEmail" class="mr-3">Update your Email: </label>
+              <button class="btn btn-purple" id="changeEmailBtn">Change Email</button>
+            </div>
+            <div class="form-group d-flex align-items-center">
+              <label for="changePassword" class="mr-3">Update your Password: </label>
+              <button class="btn btn-purple" id="changePasswordBtn">Change Password</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change Details Modal -->
+    <div class="modal fade" id="changeDetailsModal" tabindex="-1" role="dialog" aria-labelledby="changeDetailsModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="changeDetailsModalLabel">Change Details</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="text" class="form-control" id="newDetailInput" placeholder="Enter new value" />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="saveNewDetail">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
     <script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -201,6 +380,63 @@
     ></script>
 
     {% block javascript %}
+    
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+      const changeUsernameBtn = document.getElementById("changeUsernameBtn");
+      const changeEmailBtn = document.getElementById("changeEmailBtn");
+      const changePasswordBtn = document.getElementById("changePasswordBtn");
+      const changeDetailsModal = new bootstrap.Modal(document.getElementById("changeDetailsModal"));
+      const newDetailInput = document.getElementById("newDetailInput");
+      const saveNewDetail = document.getElementById("saveNewDetail");
+
+      let currentField = "";
+
+      const openChangeModal = (field) => {
+        currentField = field;
+        document.getElementById("changeDetailsModalLabel").textContent = `Change ${field}`;
+        newDetailInput.placeholder = `Enter new ${field.toLowerCase()}`;
+        newDetailInput.value = "";
+        changeDetailsModal.show();
+      };
+
+      changeUsernameBtn.addEventListener("click", () => openChangeModal("username"));
+      changeEmailBtn.addEventListener("click", () => openChangeModal("email"));
+      changePasswordBtn.addEventListener("click", () => openChangeModal("password"));
+
+      saveNewDetail.addEventListener("click", () => {
+        const updatedValue = newDetailInput.value.trim();
+        if (!updatedValue) {
+          alert("Please enter a value.");
+          return;
+        }
+
+        // Send data to backend dynamically
+        fetch(`/update-${currentField}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ value: updatedValue }),
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert(`Successfully updated ${currentField}`);
+            } else {
+              alert(`Error: ${data.message}`);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while updating the detail.');
+          });
+
+        changeDetailsModal.hide();
+      });
+    });
+    </script>
+
     <script>
       document.getElementById("navbarProfilePicture").addEventListener("click", function () {
         $('#profileModal').modal('show'); // Show modal on profile picture click
@@ -217,7 +453,136 @@
           }, 4000);
         });
       });
+
+      let currentXp = 0;
+      let currentLevel = 0;
+      const xpPerLevel = 100;
+      const coinsAudio = new Audio("{{ url_for('static', filename='audio/coins.mp3') }}");
+      //xp stuff
+      document.getElementById("addXpBtn").addEventListener("click", function () {
+        currentXp += 25;
+        coinsAudio.play()
+        if (currentXp >= xpPerLevel) {
+          currentXp -= xpPerLevel;
+          currentLevel++;
+        }
+        const xpFraction = (currentXp / xpPerLevel) * 100;
+        document.getElementById("xpBarFill").style.width = `${xpFraction}%`;
+        document.getElementById("levelDisplay").textContent = `Level: ${currentLevel}`;
+
+        console.log(`Current Level: ${currentLevel}, XP: ${currentXp}`);
+      });
+
+      //confetti stuff
+      document.addEventListener("DOMContentLoaded", function () {
+        let currentXp = 0;
+        let currentLevel = 0;
+        const xpPerLevel = 100;
+
+
+        const addXpBtn = document.getElementById("addXpBtn");
+        const xpBarFill = document.getElementById("xpBarFill");
+        const levelDisplay = document.getElementById("levelDisplay");
+
+        const confettiLeft = document.createElement("img");
+        confettiLeft.src = "{{ url_for('static', filename='images/confetti.gif') }}";
+        confettiLeft.classList.add("confetti", "left");
+
+        const confettiRight = document.createElement("img");
+        confettiRight.src = "{{ url_for('static', filename='images/confetti.gif') }}";
+        confettiRight.classList.add("confetti", "right");
+
+        document.body.appendChild(confettiLeft);
+        document.body.appendChild(confettiRight);
+
+        const showConfetti = () => {
+          confettiLeft.style.display = "block";
+          confettiRight.style.display = "block";
+
+          setTimeout(() => {
+            confettiLeft.style.display = "none";
+            confettiRight.style.display = "none";
+          }, 2000); // Hide after 2 seconds
+        };
+
+        addXpBtn.addEventListener("click", function () {
+          currentXp += 25;
+
+          if (currentXp >= xpPerLevel) {
+            currentXp -= xpPerLevel;
+            currentLevel++;
+            showConfetti();
+
+          }
+
+          const xpFraction = (currentXp / xpPerLevel) * 100;
+          xpBarFill.style.width = `${xpFraction}%`;
+          levelDisplay.textContent = `Level: ${currentLevel}`;
+
+          console.log(`Current Level: ${currentLevel}, XP: ${currentXp}`);
+        });
+      });
+
+      //trophy stuff
+      document.addEventListener("DOMContentLoaded", function () {
+        let currentXp = 0;
+        let currentLevel = 0;
+        const xpPerLevel = 100;
+        const levelUpAudio = new Audio("{{ url_for('static', filename='audio/level up.mp3') }}");
+
+        const addXpBtn = document.getElementById("addXpBtn");
+        const xpBarFill = document.getElementById("xpBarFill");
+        const levelDisplay = document.getElementById("levelDisplay");
+
+        // Create the trophy element
+        const trophy = document.createElement("img");
+        trophy.src = "{{ url_for('static', filename='images/trophy1.png') }}"; // Start with the first image
+        trophy.classList.add("trophy", "hidden");
+        document.body.appendChild(trophy);
+
+        const showTrophy = () => {
+          trophy.classList.remove("hidden");
+
+          // Alternate between the two trophy images
+          let isImageOne = true;
+          const alternateInterval = setInterval(() => {
+            trophy.src = isImageOne
+              ? "{{ url_for('static', filename='images/trophy2.png') }}"
+              : "{{ url_for('static', filename='images/trophy1.png') }}";
+            isImageOne = !isImageOne;
+          }, 200); // Alternate every 200ms
+
+          // Stop alternation after 2 seconds
+          setTimeout(() => {
+            clearInterval(alternateInterval);
+            trophy.classList.add("hidden");
+          }, 2000);
+        };
+
+        // Event listener for the Add XP button
+        addXpBtn.addEventListener("click", function () {
+          currentXp += 25; // Add 25 XP per click
+          // Check for level-up
+          if (currentXp >= xpPerLevel) {
+            currentXp -= xpPerLevel; // Subtract the XP used to level up
+            currentLevel++; // Increase the level
+            levelUpAudio.play()
+            showTrophy(); // Show the trophy animation
+          }
+
+          // Update the XP bar and level display
+          const xpFraction = (currentXp / xpPerLevel) * 100;
+          xpBarFill.style.width = `${xpFraction}%`;
+          levelDisplay.textContent = `Level: ${currentLevel}`;
+        });
+      });
     </script>
+    
     {% endblock %}
+    <img src="{{ url_for('static', filename='images/confetti.gif') }}" alt="Confetti Explosion" class="confetti left">
+    <img src="{{ url_for('static', filename='images/confetti.gif') }}" alt="Confetti Explosion Mirrored" class="confetti right">
+    <audio id="coinsSound" src="{{ url_for('static', filename='audio/coins.mp3') }}" preload="auto"></audio>
+    <audio id="levelUpSound" src="{{ url_for('static', filename='audio/level_up.mp3') }}" preload="auto"></audio>
+
   </body>
 </html>
