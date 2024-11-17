@@ -1,26 +1,51 @@
 {% extends "base.html" %}
 
-{% block title %}Messages for {{ thread.title }}{% endblock %}
+{% block title %}{{ thread.title }}{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <h1 class="text-center">Messages for {{ thread.title }}</h1>
+    <h1 class="text-center">{{ thread.title }}</h1>
 
-    <div class="messages-container mt-4">
+    <div id="messagesContainer" class="message_tab__messages-container mt-4 border rounded">
         {% for message in messages %}
-        <div class="message-card border rounded p-3 mb-3">
-            <p>{{ message.content }}</p>
-            <small class="text-muted">Posted by User ID {{ message.user_id }} at {{ message.time_stamp }}</small>
+        <div class="message_tab__message-card">
+            <div class="d-flex justify-content-between align-items-center">
+                {% if message.user.id != user.id %}
+                <div class="message_tab__profile-info d-flex align-items-center">
+                    <img src="{{ message.user.profile_picture or url_for('static', filename='images/default-profile.png') }}" 
+                         alt="Profile Picture" 
+                         class="message_tab__rounded-circle mr-3" 
+                         style="width: 40px; height: 40px; object-fit: cover;">
+                    <p class="font-weight-bold mb-0">{{ message.user.first_name }} {{ message.user.last_name }}</p>
+                </div>
+                {% endif %}
+
+                {% if message.user.id == user.id %}
+                <div class="message_tab__profile-info d-flex align-items-center ml-auto">
+                    <p class="font-weight-bold mb-0">{{ message.user.first_name }} {{ message.user.last_name }}</p>
+                    <img src="{{ message.user.profile_picture or url_for('static', filename='images/default-profile.png') }}" 
+                         alt="Profile Picture" 
+                         class="message_tab__rounded-circle ml-3" 
+                         style="width: 40px; height: 40px; object-fit: cover;">
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="message_tab__message-content mt-2">
+                <p class="mb-2">{{ message.content }}</p>
+            </div>
+
+            <small class="text-muted">{{ message.time_stamp|timeago }}</small>
         </div>
         {% endfor %}
     </div>
 
-    <form method="POST" class="mt-4">
+    <form method="POST" class="mt-4 text-center">
         <div class="form-group">
             <label for="content" class="form-label">New Message:</label>
-            <textarea id="content" name="content" class="form-control" placeholder="Write your message here" required></textarea>
+            <textarea id="content" name="content" class="form-control message_tab__text-area" placeholder="Write your message here" required></textarea>
         </div>
-        <button type="submit" class="btn btn-primary mt-2">Send</button>
+        <button type="submit" class="message_tab__fancy-button mt-2">Send</button>
     </form>
 
     <div class="text-center mt-4">
@@ -29,17 +54,94 @@
 </div>
 
 <style>
-    .messages-container {
-        max-width: 800px;
-        margin: 0 auto;
-    }
-
-    .message-card {
+    /* Message container styles */
+    .message_tab__messages-container {
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        max-height: 400px;
+        padding: 15px;
         background-color: #f8f9fa;
+        align-items: center; /* Centers the message cards horizontally */
     }
 
-    textarea {
+    /* Message card styles */
+    .message_tab__message-card {
+        position: relative;
+        background-color: #ffffff;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 20px; /* More rounded frame */
+        width: 100%;
+        max-width: 600px;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Enhanced shadow for emphasis */
+        text-align: left;
+    }
+
+    .message_tab__message-card:hover {
+        transform: scale(1.02);
+        transition: transform 0.2s ease-in-out;
+    }
+
+    /* Profile info styles */
+    .message_tab__profile-info {
+        flex-shrink: 0;
+    }
+
+    .message_tab__rounded-circle {
+        border: 2px solid #ddd;
+    }
+
+    /* Message content */
+    .message_tab__message-content p {
+        font-size: 14px;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .message_tab__text-area {
+        border-radius: 15px; /* Matches rounded style of messages */
+        padding: 10px;
+        border: 1px solid #ccc;
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        display: block;
         resize: vertical;
     }
+
+    /* Fancy button styles */
+    .message_tab__fancy-button {
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #fff;
+        background: linear-gradient(45deg, #6a11cb, #2575fc);
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+        margin: 0 auto;
+        display: block;
+    }
+
+    .message_tab__fancy-button:hover {
+        background: linear-gradient(45deg, #2575fc, #6a11cb);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
 </style>
+
+<script>
+    // Automatically scroll the messages container to the newest message
+    window.addEventListener('DOMContentLoaded', () => {
+        const messagesContainer = document.getElementById('messagesContainer');
+        if (messagesContainer) {
+            // Scroll to the bottom of the container
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    });
+</script>
+
 {% endblock %}
