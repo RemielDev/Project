@@ -2,9 +2,13 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
+from datetime import datetime
 
 db = SQLAlchemy()
 DB_NAME = "database.db"
+
+
+
 
 
 def create_app():
@@ -25,6 +29,26 @@ def create_app():
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(thread, url_prefix='/')
 
+    def time_ago(timestamp):
+        """Calculate how long ago a timestamp occurred."""
+        now = datetime.utcnow()
+        delta = now - timestamp
+
+        if delta.days > 1:
+            return f"{delta.days} days ago"
+        elif delta.days == 1:
+            return "1 day ago"
+        elif delta.seconds >= 3600:
+            hours = delta.seconds // 3600
+            return f"{hours} hours ago"
+        elif delta.seconds >= 60:
+            minutes = delta.seconds // 60
+            return f"{minutes} minutes ago"
+        else:
+            return "Just now"
+
+    # Register the filter in Jinja2
+    app.jinja_env.filters['timeago'] = time_ago
 
 
     from .models import User, Note

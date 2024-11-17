@@ -1,145 +1,102 @@
-/* Navbar Styles */
 .navbar .nav-item img {
     border: 2px solid #ffffff;
     transition: transform 0.2s ease;
-}
-
-.navbar .nav-item img:hover {
+  }
+  
+  .navbar .nav-item img:hover {
     transform: scale(1.1);
-}
+  }
+  
 
 /* Global Page Background */
 html, body {
     margin: 0;
     padding: 0;
-    background-color: #ffffff;
+    background-color: #ffffff; /* Ensures consistency */
     height: 100%;
 }
 
-/* Threads Container */
-.threads-container {
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-/* Thread Card */
-.thread-card {
-    background-color: #f8f9fa;
-    padding: 15px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-}
-
-/* Modal Styles */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
+/* Login and Signup Frames */
+.login-frame, .signup-frame {
+    background-color: #ffffff; /* Matches the body background */
     width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1050;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
 }
 
-.modal-content {
-    position: relative;
-    max-width: 500px;
-    margin: 10% auto;
-    background: #fff;
-    padding: 20px;
+/* Form Containers */
+.login-frame .form-container, .signup-frame .form-container {
+    background-color: #ffffff; /* Matches the frames */
+    max-width: 800px; /* Login frame width */
+    padding: 100px; /* Login frame padding */
+    border: 1px solid #ccc;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-}
-
-.modal-content h3 {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.modal-content .btn {
-    margin-top: 10px;
-    margin-right: 10px;
-}
-
-/* Modal Close Button */
-.modal-content .close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-/* Buttons Inside Thread Card */
-.d-flex .btn {
-    margin-right: 10px;
-}
-
-/* Form Elements */
-textarea {
-    resize: vertical;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.form-control {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.btn {
-    padding: 10px 15px;
-    font-size: 14px;
-    border-radius: 5px;
-}
-
-/* Create Thread Form */
-#create-thread-form {
-    display: none;
-    max-width: 800px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f8f9fa;
+    top: 15%;
 }
 
-/* Flash Message Styles */
+.signup-frame .form-container {
+    max-width: 400px; /* Signup frame width */
+    padding: 20px; /* Signup frame padding */
+}
+
+/* Header */
+.header {
+    background-color: #ffffff; /* Solid white header */
+}
+
+
+/* Flash Message Overlay */
 .flash-message {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1050;
-    min-width: 300px;
-    padding: 15px;
-    background-color: #f8d7da; /* Error background */
+    position: fixed; /* Stick to the viewport */
+    top: 10; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Center using transform */
+    z-index: 1050; /* Ensure it appears above other elements */
+    width: 50%; /* Make it half the screen width */
+    min-width: 300px; /* Ensure a minimum width */
+    padding: 20px; /* Padding for internal spacing */
+    background-color: #f8d7da; /* Example: red for error */
     color: #721c24;
     border: 1px solid #f5c6cb;
-    border-radius: 5px;
-    animation: fadeOut 4s forwards;
+    border-radius: 10px; /* More rounded edges */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: fadeOut 4s forwards; /* Smooth fade-out effect */
+    text-align: center; /* Center the text inside */
+    font-size: 16px; /* Adjust font size for better readability */
 }
 
 .flash-message.success {
-    background-color: #d4edda; /* Success background */
+    background-color: #d4edda; /* Green for success */
     color: #155724;
     border: 1px solid #c3e6cb;
+}
+
+.flash-message.info {
+    background-color: #d1ecf1; /* Blue for info */
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.flash-message .close {
+    background: none;
+    border: none;
+    font-size: 16px;
+    line-height: 1;
+    color: #000;
+    opacity: 0.5;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px; /* Place close button at the top-right corner */
+}
+
+.flash-message .close:hover {
+    opacity: 1;
 }
 
 /* Fade-out animation */
@@ -156,17 +113,254 @@ textarea {
     }
 }
 
-/* Responsiveness */
-@media (max-width: 768px) {
-    .threads-container {
-        padding: 10px;
-    }
 
-    .thread-card {
-        padding: 10px;
-    }
+/* Login Frame Specific */
+.login-frame .title, .signup-frame .title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
 
-    .modal-content {
-        max-width: 90%;
-    }
+.login-frame .form-group, .signup-frame .form-group {
+    margin-bottom: 20px;
+}
+
+.login-frame .form-control, .signup-frame .form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.login-frame .form-btn, .signup-frame .form-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-frame .buttons-container, .signup-frame .buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.page-link {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.page-link a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.page-link a:hover {
+    text-decoration: underline;
+}
+
+/* Fancy Button Styles */
+.btnPurpleFancy {
+    --fancy-button-gradient-0: #8d49fd;
+    --fancy-button-gradient-50: #7f56f3;
+    --fancy-button-gradient-100: #5691f3;
+    --fancy-button-inner-shadow-top: rgba(233, 209, 255, 0.2);
+    --fancy-button-inner-shadow-top-lg: rgba(9, 12, 60, 0.1);
+    --fancy-button-inner-shadow-bottom: rgba(137, 222, 246, 0.3);
+    --fancy-button-shine-top: #e9d1ff;
+    --fancy-button-shine-bottom: #adfff9;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 21px;
+    text-shadow: 0px 0.5px 0.5px rgba(0, 0, 0, 0.2);
+    padding: 0;
+    margin: 0;
+    appearance: none;
+    border: none;
+    outline: none;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    z-index: 1;
+    border-radius: 25px;
+    color: #fff;
+    background-image: linear-gradient(
+        to bottom,
+        var(--fancy-button-gradient-0) 0%,
+        var(--fancy-button-gradient-50) 50%,
+        var(--fancy-button-gradient-100) 100%
+    );
+    box-shadow:
+        0px 4px 12px rgba(9, 12, 60, 0.15),
+        0px 2px 8px rgba(9, 12, 60, 0.15),
+        0px 1px 3px var(--fancy-button-inner-shadow-top-lg),
+        inset 0px 1px 1px var(--fancy-button-inner-shadow-top),
+        inset 0px -1px 3px var(--fancy-button-inner-shadow-bottom);
+}
+
+.btnPurpleFancy:before,
+.btnPurpleFancy:after {
+    content: "";
+    position: absolute;
+    border-radius: inherit;
+    will-change: transform;
+}
+
+.btnPurpleFancy:before {
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--fancy-button-shine-top);
+    width: 96px;
+    height: 6px;
+    top: -3px;
+    opacity: 0.6;
+    filter: blur(6px);
+    transition: opacity 0.25s;
+}
+
+.btnPurpleFancy:after {
+    inset: 0;
+    background-size: cover;
+    z-index: 2;
+    opacity: 0.3;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+}
+
+.btnPurpleFancy span {
+    display: block;
+    padding: 12px 24px;
+    border-radius: inherit;
+    overflow: hidden;
+    position: relative;
+    background-image: linear-gradient(
+        to bottom,
+        var(--fancy-button-shine-top),
+        transparent 8px
+    );
+    background-position: 0 -6px;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+
+.btnPurpleFancy span:before,
+.btnPurpleFancy span:after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background-color: var(--fancy-button-shine-bottom);
+    transition:
+        opacity 0.25s,
+        transform 0.25s;
+    will-change: transform;
+}
+
+.btnPurpleFancy span:before {
+    width: 92px;
+    height: 8px;
+    bottom: -4px;
+    opacity: 0.75;
+    filter: blur(6px);
+}
+
+.btnPurpleFancy span:after {
+    width: 112px;
+    height: 1px;
+    bottom: 0;
+    opacity: 0.9;
+    filter: blur(1px);
+}
+
+.btnPurpleFancy:hover span:before {
+    opacity: 0.8;
+    transform: translateX(-50%) scale(1.25);
+}
+
+.btnPurpleFancy:hover span:after {
+    opacity: 1;
+}
+
+/* Custom File Input Wrapper */
+.custom-file-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.custom-file-input {
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.custom-file-label {
+    display: block;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #8d49fd;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    font-size: 16px;
+    position: relative;
+    z-index: 1;
+    transition: background-color 0.3s ease;
+}
+
+.custom-file-label:hover {
+    background-color: #7f56f3;
+}
+
+/* Thread Card */
+.thread-card {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 700px; /* Increased width */
+}
+
+/* Buttons inside Thread Card */
+.actions .btn {
+    font-size: 13px;
+    padding: 8px 12px;
+    margin-right: 10px; /* Add padding between buttons */
+}
+
+/* Messages Container */
+.messages-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding-top: 15px; /* Add padding to prevent collision with the top */
+}
+
+/* Message Card */
+.message-card {
+    background-color: #ffffff;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.message-content p {
+    font-size: 14px;
+    margin-bottom: 8px;
 }

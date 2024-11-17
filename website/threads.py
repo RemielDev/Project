@@ -1,10 +1,29 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
+from datetime import datetime
 from .models import User, School, Thread, Message
 from . import db
 from sqlalchemy.sql import func
 
 thread = Blueprint('thread', __name__)
+
+def time_ago(timestamp):
+    """Helper function to calculate how long ago a timestamp occurred."""
+    now = datetime.utcnow()
+    delta = now - timestamp
+
+    if delta.days > 1:
+        return f"{delta.days} days ago"
+    elif delta.days == 1:
+        return "1 day ago"
+    elif delta.seconds >= 3600:
+        hours = delta.seconds // 3600
+        return f"{hours} hours ago"
+    elif delta.seconds >= 60:
+        minutes = delta.seconds // 60
+        return f"{minutes} minutes ago"
+    else:
+        return "Just now"
 
 @thread.route('/', methods=['GET', 'POST'])
 @login_required
@@ -56,6 +75,11 @@ def thread_messages(thread_id):
                 .filter_by(thread_id=thread_id)
                 .order_by(Message.time_stamp.asc())
                 .all())
+
+    # Attach user information and "time ago" to messages
+    for message in messages:
+        message.user = User.query.get(message.user_id)
+        message.time_ago = time_ago(message.time_stamp)
 
     if request.method == 'POST':
         content = request.form.get('content')

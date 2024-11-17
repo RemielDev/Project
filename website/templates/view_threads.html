@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}Threads for {{ school.name }}{% endblock %}
+{% block title %}Threads for {{ school }}{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <h1 class="text-center">Threads for {{ school.name }}</h1>
+    <h1 class="text-center">Threads for {{ school }}</h1>
     <div class="threads-container mt-4">
         {% for thread in threads %}
-        <div class="thread-card border rounded p-3 mb-3">
+        <div class="thread-card border rounded p-4 mb-3" style="max-width: 800px; margin: 0 auto;">
             <h2 class="h5">{{ thread.title }}</h2>
             <p>{{ thread.description }}</p>
             <small class="text-muted">Created by User ID {{ thread.created_by }} at {{ thread.time_stamp }}</small>
-            <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+            <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
                 <form action="{{ url_for('thread.thread_messages', thread_id=thread.id) }}" method="GET" class="d-inline">
-                    <button type="submit" class="btn btn-primary">Enter</button>
+                    <button type="submit" class="btn btn-primary" style="margin-right: 10px;">Enter</button>
                 </form>
-                <button type="button" class="btn btn-dark" onclick="openScheduleModal('{{ thread.id }}')">Schedule Session</button>
+                <button type="button" class="btn btn-dark" style="margin-right: 10px;" onclick="openScheduleModal('{{ thread.id }}')">Schedule Session</button>
                 <button type="button" class="btn btn-secondary" onclick="openViewSessionsModal('{{ thread.id }}')">See Other Sessions</button>
             </div>
         </div>
@@ -79,16 +79,28 @@
 
 <style>
     .threads-container {
-        max-width: 1000px;
+        max-width: 1200px; /* Widened container */
         margin: 0 auto;
     }
 
     .thread-card {
         background-color: #f8f9fa;
+        width: 100%;
+        max-width: 800px; /* Adjusted thread card width */
+        padding: 20px;
     }
 
     textarea {
         resize: vertical;
+    }
+
+    .messages-container {
+        max-width: 800px;
+        padding-top: 20px; /* Padding for the first message in the scrolling frame */
+    }
+
+    .btn {
+        margin-right: 10px; /* Space between buttons */
     }
 </style>
 <script>
