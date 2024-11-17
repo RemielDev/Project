@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, jsonify
 from flask_login import login_required, current_user
-from .models import Note
+from .models import Note, User
 from . import db
 import json
 
@@ -35,3 +35,46 @@ def delete_note():
             db.session.commit()
 
     return jsonify({})
+
+@views.route('/update-password', methods=['POST'])
+def update_password():
+    data = request.get_json()
+    if not data or not data.get('value'):
+        return jsonify({'success': False, 'message': 'No email provided.'}), 400
+
+    user = User.query.get(1)  # Replace with your user identification logic
+    if not user:
+        return jsonify({'success': False, 'message': 'User not found.'}), 404
+
+    user.email = data['value']
+    db.session.commit()
+    return jsonify({'success': True, 'message': 'Email updated successfully.'})
+
+
+@views.route('/update-email', methods=['POST'])
+def update_email():
+    data = request.get_json()
+    if not data or not data.get('value'):
+        return jsonify({'success': False, 'message': 'No email provided.'}), 400
+
+    user = User.query.get(1)  # Replace with your user identification logic
+    if not user:
+        return jsonify({'success': False, 'message': 'User not found.'}), 404
+
+    user.email = data['value']
+    db.session.commit()
+    return jsonify({'success': True, 'message': 'Email updated successfully.'})
+
+@views.route('/update-username', methods=['POST'])
+def update_username():
+    data = request.get_json()
+    if not data or not data.get('value'):
+        return jsonify({'success': False, 'message': 'No username provided.'}), 400
+
+    user = User.query.get(1)  # Replace with your user identification logic
+    if not user:
+        return jsonify({'success': False, 'message': 'User not found.'}), 404
+
+    user.username = data['value']
+    db.session.commit()
+    return jsonify({'success': True, 'message': 'Username updated successfully.'})
