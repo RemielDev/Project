@@ -1,26 +1,45 @@
-# <!DOCTYPE html>
-# <html lang="en">
-# <head>
-#     <meta charset="UTF-8">
-#     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-#     <title>Messages for {{ thread.title }}</title>
-# </head>
-# <body>
-#     <h1>Messages for {{ thread.title }}</h1>
-#     <div>
-#         {% for message in messages %}
-#         <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
-#             <p>{{ message.content }}</p>
-#             <small>Posted by User ID {{ message.user_id }} at {{ message.time_stamp }}</small>
-#         </div>
-#         {% endfor %}
-#     </div>
-#     <form method="POST">
-#         <label for="content">New Message:</label>
-#         <textarea id="content" name="content" placeholder="Write your message here" required></textarea>
-#         <br>
-#         <button type="submit">Send</button>
-#     </form>
-#     <a href="{{ url_for('thread.view_threads') }}">Back to Threads</a>
-# </body>
-# </html>
+{% extends "base.html" %}
+
+{% block title %}Messages for {{ thread.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center">Messages for {{ thread.title }}</h1>
+
+    <div class="messages-container mt-4">
+        {% for message in messages %}
+        <div class="message-card border rounded p-3 mb-3">
+            <p>{{ message.content }}</p>
+            <small class="text-muted">Posted by User ID {{ message.user_id }} at {{ message.time_stamp }}</small>
+        </div>
+        {% endfor %}
+    </div>
+
+    <form method="POST" class="mt-4">
+        <div class="form-group">
+            <label for="content" class="form-label">New Message:</label>
+            <textarea id="content" name="content" class="form-control" placeholder="Write your message here" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Send</button>
+    </form>
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('thread.view_threads') }}" class="btn btn-secondary">Back to Threads</a>
+    </div>
+</div>
+
+<style>
+    .messages-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .message-card {
+        background-color: #f8f9fa;
+    }
+
+    textarea {
+        resize: vertical;
+    }
+</style>
+{% endblock %}
